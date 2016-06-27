@@ -1,0 +1,11 @@
+﻿客户端异常
+1.使用继承
+2.缺省构造参数
+  带参构造具体说明出
+3.what()函数
+  析构函数错
+
+except.h
+#include<iostream>
+#include<exception>
+#include<string>
