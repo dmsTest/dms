@@ -1,4 +1,4 @@
-fndef CLIENTEXCEPTION_H
+#ifndef CLIENTEXCEPTION_H
 #define CLIENTEXCEPTION_H
 
 #include <exception>
