@@ -2,7 +2,7 @@
 #ifdef _DATA_H
 #define _DATA_H
 #include<unistd.h>//pid_t等uc数据类型和函数
-
+//test ljm
 //登入登出日志记录
 struct LogRec
 {
