@@ -5,6 +5,7 @@
 #include <string>
 #include "data.h"
 
+
 class LogSender
 {
     public:
@@ -31,10 +32,10 @@ class SocketSender : public LogSender
         void sendData(std::list<MLogRec>& logs);
         void saveFailFile(std::list<MLogRec>& logs);
     private:
-            std::string m_failFile;
-            short m_port;
-            std::string m_ip;
-            int m_sockfd;
+        std::string m_failFile;
+        short m_port;
+        std::string m_ip;
+        int m_sockfd;
 };
 
 #endif // LOGSENDER_H

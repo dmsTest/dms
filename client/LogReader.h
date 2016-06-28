@@ -7,6 +7,7 @@
 #include "data.h"
 #include "ClientException.h"
 
+
 class LogReader
 {
     public:
