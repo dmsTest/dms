@@ -1,15 +1,14 @@
 #include "ClientException.h"
 
-ClientException::ClientException()
+ClientException::ClientException():m_msg("client is exception!")
 {
 	    //ctor
 	    //
 }
 
-ClientException::ClientException(const std::string &str) : m_msg(str)
+ClientException::ClientException(const std::string &str) : m_msg("client is exception")
 {
-	    //ctor
-	    //
+	    m_msg = m_msg + " " + str + "!";
 }
 
 const char*  ClientException::what()
@@ -17,13 +16,14 @@ const char*  ClientException::what()
 	    return m_msg.c_str();
 
 }
-ClientException::~ClientException()
+
+ClientException::~ClientException() throw()
 {
 	    //dtor
 	    //
 }
 
-BackupException::BackupException() : ClientException()
+BackupException::BackupException() : ClientException("backup error")
 {
 	
 
@@ -35,7 +35,7 @@ BackupException::BackupException(const std::string &str) : ClientException(str)
 
 }
 
-SocketException::SocketException() : ClientException()
+SocketException::SocketException() : ClientException("Socket error")
 {
 	
 
@@ -47,7 +47,7 @@ SocketException::SocketException(const std::string &str) : ClientException(str)
 
 }
 
-ReadException::ReadException()
+ReadException::ReadException() : ClientException("read error")
 {
 	
 
@@ -71,7 +71,7 @@ SendException::SendException(const std::string &str) : ClientException(str)
 
 }
 
-SaveException::SaveException() : ClientException()
+SaveException::SaveException() : ClientException("save error")
 {
 	
 

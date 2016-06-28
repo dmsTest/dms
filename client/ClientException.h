@@ -9,9 +9,9 @@ class ClientException : public std::exception
 {
 	public:
 		    ClientException();
-		        ClientException(const std::string &str);
-			    virtual const char* what() ;
-			        virtual ~ClientException();
+		    ClientException(const std::string &str);
+		    virtual const char* what() ;
+		    virtual ~ClientException() throw();
 	private:
 				    std::string m_msg;
 
@@ -21,7 +21,7 @@ class BackupException : public ClientException
 {
 	public:
 		    BackupException();
-		        BackupException(const std::string &str);
+		    BackupException(const std::string &str);
 
 };
 
