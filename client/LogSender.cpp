@@ -16,7 +16,7 @@ void ConsoleSender::sendLog(std::list<MLogRec> &logs)
 }
 
 SocketSender::SocketSender(const std::string &failFile, short port,const std::string &ip,int &sockfd)
-	:m_failFile(failFile),m_port(port),m_ip(ip),m_sockfd(sockfd)
+	:m_failFile(failFile),m_port(port),m_ip(ip)
 {
 	
 }
