@@ -6,7 +6,7 @@ Client::Client(LogReader& reader,LogSender& sender)
 
 }
 
-void Client::dataMine()
+void Client::dataMine() throw(ClientException)
 {
 	std::list logList<MLogRec> = m_reader.readLog();
 	m_reader.backup();
