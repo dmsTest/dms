@@ -3,6 +3,7 @@
 
 #include "LogReader.h"
 #include "LogSender.h"
+#include <iostream>
 
 class Client
 {

@@ -26,7 +26,7 @@ class SocketSender : public LogSender
 {
     public:
         SocketSender(const std::string &failFile, short port,const std::string &ip);
-        void sendLog(std::list<MLogRec> &logs) throw(SocketException;
+        void sendLog(std::list<MLogRec> &logs) throw(SocketException);
         void connectServer();
         void readFailFile(std::list<MLogRec>& logs) throw(ReadException);
         void sendData(std::list<MLogRec>& logs) throw(SendException);
