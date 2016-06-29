@@ -8,7 +8,11 @@ LogReader::LogReader(const std::string &logFile, const std::string &loginFile)
 
 std::list<MLogRec>&  LogReader::readLog()
 {
-
+	backup();
+	readLoginsFile();
+	readBackupFile();
+	match();
+	saveLoginsFile();
 }
 
 void LogReader::backup() throw(BackupException)
