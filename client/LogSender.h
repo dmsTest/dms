@@ -4,20 +4,20 @@
 #include <list>
 #include <string>
 #include "data.h"
-
+#include "ClientException"
 
 class LogSender
 {
     public:
         LogSender();
         virtual ~LogSender();
-        virtual void sendLog(std::list<MLogRec> &logs) = 0;
+        virtual void sendLog(std::list<MLogRec> &logs) throw(SendException) = 0;
 };
 
 class ConsoleSender : public LogSender
 {
     public:
-        void sendLog(std::list<MLogRec> &logs);
+        void sendLog(std::list<MLogRec> &logs) throw(SendException("console"));
         ConsoleSender() : LogSender() {         }
         ~ConsoleSender(){       }
 };
@@ -26,11 +26,11 @@ class SocketSender : public LogSender
 {
     public:
         SocketSender(const std::string &failFile, short port,const std::string &ip);
-        void sendLog(std::list<MLogRec> &logs) ;
+        void sendLog(std::list<MLogRec> &logs) throw(SocketException;
         void connectServer();
-        void readFailFile(std::list<MLogRec>& logs);
-        void sendData(std::list<MLogRec>& logs);
-        void saveFailFile(std::list<MLogRec>& logs);
+        void readFailFile(std::list<MLogRec>& logs) throw(ReadException);
+        void sendData(std::list<MLogRec>& logs) throw(SendException);
+        void saveFailFile(std::list<MLogRec>& logs) throw(SaveException);
     private:
         std::string m_failFile;
         short m_port;

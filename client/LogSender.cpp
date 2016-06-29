@@ -10,7 +10,7 @@ LogSender::~LogSender()
     //dtor
 }
 
-void ConsoleSender::sendLog(std::list<MLogRec> &logs)
+void ConsoleSender::sendLog(std::list<MLogRec> &logs) throw(SendException("console")
 {
 	
 }
@@ -21,7 +21,7 @@ SocketSender::SocketSender(const std::string &failFile, short port,const std::st
 	
 }
 
-void SocketSender::sendLog(std::list<MLogRec> &logs)
+void SocketSender::sendLog(std::list<MLogRec> &logs) throw(SocketException)
 {
 	
 
@@ -33,19 +33,19 @@ void SocketSender::connectServer()
 
 }
 
-void SocketSender::readFailFile(std::list<MLogRec>& logs)
+void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
 {
 	
 
 }
 
-void SocketSender::sendData(std::list<MLogRec>& logs)
+void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 {
 	
 
 }
      
-void SocketSender::saveFailFile(std::list<MLogRec>& logs)
+void SocketSender::saveFailFile(std::list<MLogRec>& logs) throw(SaveException)
 {
 	
 
