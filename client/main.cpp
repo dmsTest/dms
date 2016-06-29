@@ -5,6 +5,7 @@
 #include "LogReader.h"
 #include "LogSender.h"
 #include <string>
+#include <cstring>
 
 using namespace std;
 
