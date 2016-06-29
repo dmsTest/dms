@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Client.h"
 #include "ClientException.h"
-#include "data.h"
 #include "LogReader.h"
 #include "LogSender.h"
 #include <string>
