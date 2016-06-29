@@ -4,19 +4,21 @@
 #include <list>
 #include <iostream>
 #include <string>
-#include "data.h"
-#include "ClientException.h"
-
-#include <string.h>
+#include <sstream>
+#include <fstream>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
+#include <string.h>
+#include "data.h"
+#include "ClientException.h"
+
 class LogSender
 {
     public:
-        LogSender();
-        virtual ~LogSender();
+        LogSender(){};
+        virtual ~LogSender(){};
         virtual void sendLog(std::list<MLogRec> &logs) throw(SendException) = 0;
 };
 
@@ -48,9 +50,9 @@ class SocketSender : public LogSender
 template<typename T>
 std::string converTToString(T value)
 {
-    std::ostringstream oss;
-    oss << value;
-    std::string str = oss.str();
+    std::stringstream ss;
+    ss << value;
+    std::string str = ss.str();
     return str;
 }
 #endif // LOGSENDER_H
