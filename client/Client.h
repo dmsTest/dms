@@ -8,7 +8,7 @@ class Client
 {
     public:
         Client(LogReader& reader,LogSender& sender);
-        void dataMine();
+        void dataMine() throw(ClientException);
         virtual ~Client();
     private:
         LogReader& m_reader;

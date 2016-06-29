@@ -1,5 +1,5 @@
 //数据对象类型定义
-#ifdef _DATA_H
+#ifndef _DATA_H
 #define _DATA_H
 #include<unistd.h>//pid_t等uc数据类型和函数
 //test ljm
