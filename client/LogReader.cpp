@@ -13,6 +13,7 @@ std::list<MLogRec>&  LogReader::readLog()
 	readBackupFile();
 	match();
 	saveLoginsFile();
+	return m_logs;
 }
 
 void LogReader::backup() throw(BackupException)

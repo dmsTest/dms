@@ -8,8 +8,8 @@
 
 using namespace std;
 
-std::string m_ip = "127.0.0.1";
-short m_port = 8888;
+std::string ip = "127.0.0.1";
+short port = 8888;
 
 int main(int argc, char** argv)
 {
@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 		try{
 			LogReader reader("./wtmpx","./logins.dat");
 			ConsoleSender consoleSender;
-			//SocketSender socketSender("./fail.dat",m_port,m_ip);
+			//SocketSender socketSender("./fail.dat",port,ip);
 			//Client client(reader,socketSender);
 			Client client(reader,consoleSender);
 			client.dataMine();

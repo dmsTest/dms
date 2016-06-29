@@ -49,7 +49,7 @@ void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
 	//m_logFile,if sock connect success,read fail file
     if(!m_sockfd)
 	{
-		std::ifstream ifs(m_failFile);
+		std::ifstream ifs(m_failFile.c_str());
 		std::string line;
 		while(std::getline(ifs,line))
 		{
@@ -91,7 +91,7 @@ void SocketSender::saveFailFile(std::list<MLogRec>& logs) throw(SaveException)
 	//
 	if(m_sockfd == -1)
 	{
-		std::ofstream ofs(m_failFile);
+		std::ofstream ofs(m_failFile.c_str());
 		for(std::list<MLogRec>::iterator it = logs.begin(); it != logs.end(); ++it)
 		{
 			ofs << it->logname << " " << it->logip << " " << it->pid <<  " "
