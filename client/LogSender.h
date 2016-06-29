@@ -2,9 +2,15 @@
 #define LOGSENDER_H
 
 #include <list>
+#include <iostream>
 #include <string>
 #include "data.h"
 #include "ClientException.h"
+
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 class LogSender
 {
@@ -26,6 +32,7 @@ class SocketSender : public LogSender
 {
     public:
         SocketSender(const std::string &failFile, short port,const std::string &ip);
+        ~SocketSender();
         void sendLog(std::list<MLogRec> &logs) throw(SendException);
         void connectServer();
         void readFailFile(std::list<MLogRec>& logs) throw(ReadException);
@@ -38,4 +45,12 @@ class SocketSender : public LogSender
         int m_sockfd;
 };
 
+template<typename T>
+std::string converTToString(T value)
+{
+    std::ostringstream oss;
+    oss << value;
+    std::string str = oss.str();
+    return str;
+}
 #endif // LOGSENDER_H
