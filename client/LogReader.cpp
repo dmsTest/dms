@@ -25,7 +25,8 @@ list<MLogRec>&  LogReader::readLog()  //读取登录日志文件并将读取信息保存至list中
 
 void LogReader::backup() throw(BackupException)
 {
-    system("./backup");//调用Linux下的shell脚本文件 进行日志记录wtmpx文件备份
+	std::string str = "./backup "+ m_backupFile;
+    system(str.c_str());//调用Linux下的shell脚本文件 进行日志记录wtmpx文件备份
 }
 
 void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
@@ -44,7 +45,7 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
 
     for(int i=0; i<fsize; i++)
     {
-        cout<<"开始读取备份文件"<<endl;
+        //cout<<"开始读取备份文件"<<endl;
         LogRec logrec;
         int  pos=i*372;         //设定文件指针每次读取记录时的位置，每次读取都在一条记录的开始处
         fin.seekg(pos,ios::beg);
@@ -86,7 +87,7 @@ std::string LogReader::getWtmpxString()
     char wtmpxFile[20];
     sprintf(wtmpxFile,"%s.%04d%02d%02d%02d%02d%02d",m_logFile.c_str(),now_tm->tm_year+1900,now_tm->tm_mon+1,now_tm->tm_mday,now_tm->tm_hour,now_tm->tm_min,now_tm->tm_sec);
     std::string str(wtmpxFile);
-    std::cout << str << std::endl;
+   // std::cout << str << std::endl;
     return str;
 }
 
@@ -104,7 +105,7 @@ void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息
     fin.seekg(0,ios::beg);
     for(int i=0; i<fsize; i++)
     {
-        cout<<"开始读取匹配未成功的日志文件!"<<endl;
+     //   cout<<"开始读取匹配未成功的日志文件!"<<endl;
         LogRec logrec;
         int  pos=i*372;    //文件中每条记录的开始位置
         fin.seekg(pos,ios::beg);//将文件指针指向一条记录的开始位置
