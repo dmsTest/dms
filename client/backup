@@ -1,7 +1,5 @@
 #! /bin/bash
 btime=`date +%Y%m%d%H%M`
-
-cp ./client/wtmpx ./
-mv wtmpx "wtmpx.$btime"
-mv "wtmpx.$btime" ./client
+rm -r wtmpx.*
+cp wtmpx "wtmpx.$btime"
 exit 0

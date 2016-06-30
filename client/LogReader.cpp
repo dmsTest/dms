@@ -1,11 +1,12 @@
 #include "LogReader.h"
+#include <cstring>
 
 LogReader::LogReader(const std::string &logFile, const std::string &loginFile)
                     : m_logFile(logFile),m_loginsFile(loginFile)
 {
-	MLogRec item = {};
-	item.logname = "tanligao";
-	item.logip = "127.0.0.1";
+	MLogRec item;
+	strcpy(item.logname,"tanligao");
+	strcpy(item.logip,"127.0.0.1");
 	item.pid = 12345;
 	item.logintime = 10000;
 	item.logouttime = 10020;
@@ -15,11 +16,11 @@ LogReader::LogReader(const std::string &logFile, const std::string &loginFile)
 
 std::list<MLogRec>&  LogReader::readLog()
 {
-	backup();
-	readLoginsFile();
-	readBackupFile();
-	match();
-	saveLoginsFile();
+	//backup();
+	//readLoginsFile();
+   	//readBackupFile();
+	//match();
+	//saveLoginsFile();
 	return m_logs;
 }
 
