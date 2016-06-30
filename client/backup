@@ -1,5 +1,4 @@
 #! /bin/bash
-btime=`date +%Y%m%d%H%M`
 rm -r wtmpx.*
-cp wtmpx "wtmpx.$btime"
+cp wtmpx $1
 exit 0
