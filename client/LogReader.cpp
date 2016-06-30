@@ -25,8 +25,8 @@ list<MLogRec>&  LogReader::readLog()  //读取登录日志文件并将读取信息保存至list中
 
 void LogReader::backup() throw(BackupException)
 {
-    string str="./backup "+backup;
-    system(str.c_str);//调用Linux下的shell脚本文件 进行日志记录wtmpx文件备份
+    string str="./backup "+m_backupFile;
+    system(str.c_str());//调用Linux下的shell脚本文件 进行日志记录wtmpx文件备份
 }
 
 void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
@@ -67,7 +67,7 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
             if(type==7)          //如果是7则可以判定是登入记录 把记录写入登入list
             {
                 m_logins.push_back(logrec);
-                lonin_num++;
+                login_num++;
 
             }
             else if(type==8)    //如果是8则可以判定是登入记录 把记录写入登出list
@@ -78,6 +78,8 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
         }
     }
     fin.close();  //关闭文件流
+    cout<<"loginFile size:"<<m_logins.size()<<endl;
+    cout<<"logoutFile size:"<<m_logouts.size()<<endl;
     cout<<"end read backupFile!"<<endl;
 }
 //获取备份文件名 构造函数中调用初始化m_logFile变量
@@ -104,7 +106,7 @@ void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息
     }
     fin.seekg(0,ios::end);
     int fsize = fin.tellg()/372;
-    cout<<"共有"<<fsize<<"条未匹配记录！"<<endl;
+    cout<<"total: "<<fsize<<"unmatched data!"<<endl;
     fin.seekg(0,ios::beg);
     cout<<"start read unsuccessful match data!"<<endl;
     for(int i=0; i<fsize; i++)
@@ -122,6 +124,7 @@ void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息
         m_logins.push_back(logrec);                   //将读取的未匹配记录插入登入记录list
     }
     fin.close();
+
     cout<<"end read unsuccessful match data!"<<endl;
 }
 
