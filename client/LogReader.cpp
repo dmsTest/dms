@@ -3,7 +3,14 @@
 LogReader::LogReader(const std::string &logFile, const std::string &loginFile)
                     : m_logFile(logFile),m_loginsFile(loginFile)
 {
-
+	MLogRec item = {};
+	item.logname = "tanligao";
+	item.logip = "127.0.0.1";
+	item.pid = 12345;
+	item.logintime = 10000;
+	item.logouttime = 10020;
+	item.logtime = 20;
+	m_logs.push_back(item);
 }
 
 std::list<MLogRec>&  LogReader::readLog()
