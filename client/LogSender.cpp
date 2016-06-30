@@ -1,4 +1,5 @@
 #include "LogSender.h"
+#include <unistd.h>
 
 void ConsoleSender::sendLog(std::list<MLogRec> &logs)throw(SendException)
 {
@@ -70,6 +71,14 @@ void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 {
 	for(std::list<MLogRec>::iterator it = logs.begin(); it != logs.end(); ++it)
 	{
+		ssize_t retval = write(m_sockfd,(char*)(&(*it)),sizeof(MLogRec));
+		if(retval != 0)
+		{
+			std::cout << "socket error, send error!" << std::endl;
+			close(m_sockfd);
+			return; 
+		}
+		/*
 		write(m_sockfd,it->logname,sizeof(it->logname));
 		write(m_sockfd,it->logip,sizeof(it->logip));
 
@@ -82,6 +91,7 @@ void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 		write(m_sockfd,s_logintime.c_str(),s_logintime.size());
 		write(m_sockfd,s_logouttime.c_str(),s_logouttime.size());
 		write(m_sockfd,s_logtime.c_str(),s_logtime.size());
+		*/
 	}
 
 }
