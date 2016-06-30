@@ -41,10 +41,10 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
     fin.seekg(0,ios::end);
     int fsize = fin.tellg()/372;  //算出备份的日志文件中的登入登出记录数目
     fin.seekg(0,ios::beg);
-
+    cout<<"start read backupFile!"<<endl;
     for(int i=0; i<fsize; i++)
     {
-        cout<<"开始读取备份文件"<<endl;
+        
         LogRec logrec;
         int  pos=i*372;         //设定文件指针每次读取记录时的位置，每次读取都在一条记录的开始处
         fin.seekg(pos,ios::beg);
@@ -75,6 +75,7 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
         }
     }
     fin.close();  //关闭文件流
+    cout<<"end read backupFile!"<<endl;
 }
 //获取备份文件名 构造函数中调用初始化m_logFile变量
 std::string LogReader::getWtmpxString()
@@ -86,7 +87,7 @@ std::string LogReader::getWtmpxString()
     char wtmpxFile[20];
     sprintf(wtmpxFile,"%s.%04d%02d%02d%02d%02d%02d",m_logFile.c_str(),now_tm->tm_year+1900,now_tm->tm_mon+1,now_tm->tm_mday,now_tm->tm_hour,now_tm->tm_min,now_tm->tm_sec);
     std::string str(wtmpxFile);
-    std::cout << str << std::endl;
+    //std::cout << str << std::endl;
     return str;
 }
 
@@ -102,9 +103,9 @@ void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息
     int fsize = fin.tellg()/372;
     cout<<"共有"<<fsize<<"条未匹配记录！"<<endl;
     fin.seekg(0,ios::beg);
+    cout<<"start read unsuccessful match data!"<<endl;
     for(int i=0; i<fsize; i++)
     {
-        cout<<"开始读取匹配未成功的日志文件!"<<endl;
         LogRec logrec;
         int  pos=i*372;    //文件中每条记录的开始位置
         fin.seekg(pos,ios::beg);//将文件指针指向一条记录的开始位置
@@ -118,12 +119,12 @@ void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息
         m_logins.push_back(logrec);                   //将读取的未匹配记录插入登入记录list
     }
     fin.close();
-    cout<<"备份文件读取完毕！"<<endl;
+    cout<<"end read unsuccessful match data!"<<endl;
 }
 
 void LogReader::match() throw(SocketException)              //匹配登入登出数据
 {
-    cout<<"开始匹配登入登出记录！"<<endl;
+    cout<<"start match login and logout data!"<<endl;
     list<LogRec>::iterator init;   //指向记录登入信息list的迭代器
     list<LogRec>::iterator outit;  //指向记录登入信息list的迭代器
     for(outit=m_logouts.begin(); outit!=m_logouts.end(); outit++)  //双重循环 用登入记录和登出记录逐条比对
@@ -147,7 +148,7 @@ void LogReader::match() throw(SocketException)              //匹配登入登出数据
         }
         outit=m_logouts.erase(outit);             //将匹配完成的登出记录从m_logouts登出记录表中删除
     }
-    cout<<"匹配记录完成！"<<endl;
+    cout<<"mogin and logout data over!"<<endl;
 }
 
 void LogReader::saveLoginsFile() throw(SaveException)       //将未匹配成功的记录保存
@@ -156,7 +157,7 @@ void LogReader::saveLoginsFile() throw(SaveException)       //将未匹配成功的记录
     fout.open(m_loginsFile.c_str(),ios::binary|ios::out|ios::app);
     if(!fout.is_open())
     {
-        throw SaveException("打开上次未匹配文件失败！");
+        throw SaveException("open last time unsuccessful match data faile!");
     }
     int count = m_logins.size();
     int logrec_size=sizeof(LogRec);
@@ -166,7 +167,7 @@ void LogReader::saveLoginsFile() throw(SaveException)       //将未匹配成功的记录
         fout.write((char*)(&(*init)),logrec_size);
     }
     fout.close();
-    cout<<"写入未匹配记录完成！共写入"<<count<<"条未匹配记录！"<<endl;
+    cout<<"write unsuccessful match data over!total"<<count<<"unmatched data"<<endl;
 }
 
 LogReader::~LogReader()
