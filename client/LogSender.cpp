@@ -4,6 +4,7 @@
 void ConsoleSender::sendLog(std::list<MLogRec> &logs)throw(SendException)
 {
 	//write to order_line,then write to the gui list
+	/*
 	for(std::list<MLogRec>::iterator it = logs.begin(); it != logs.end(); ++it)
 	{
 		std::cout << "logname: " << it->logname <<
@@ -13,6 +14,8 @@ void ConsoleSender::sendLog(std::list<MLogRec> &logs)throw(SendException)
 			", logouttime: " << it->logouttime <<
 			", logtime: " << it->logtime << std::endl;
 	}
+	*/
+	std::cout << "log size: " << logs.size() << std::endl;
 }
 
 SocketSender::SocketSender(const std::string &failFile, short port,const std::string &ip)
