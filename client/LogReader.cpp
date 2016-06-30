@@ -44,7 +44,8 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
     cout<<"start read backupFile!"<<endl;
     for(int i=0; i<fsize; i++)
     {
-        
+        int login_num,logout_num;
+        login_num=logout_num=0;
         LogRec logrec;
         int  pos=i*372;         //设定文件指针每次读取记录时的位置，每次读取都在一条记录的开始处
         fin.seekg(pos,ios::beg);
@@ -57,7 +58,6 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
             fin.seekg(72+pos,ios::beg);  //原理同上
             fin.read((char*)&type,sizeof(type));
             type = htons(type);
-
             fin.seekg(80+pos,ios::beg);
             fin.read((char*)&(logrec.logtime),sizeof(logrec.logtime));
             logrec.logtime = htonl(logrec.logtime);
@@ -66,11 +66,13 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
             if(type==7)          //如果是7则可以判定是登入记录 把记录写入登入list
             {
                 m_logins.push_back(logrec);
+                lonin_num++;
 
             }
             else if(type==8)    //如果是8则可以判定是登入记录 把记录写入登出list
             {
                 m_logouts.push_back(logrec);
+                logout_num++;
             }
         }
     }
