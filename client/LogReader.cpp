@@ -25,7 +25,8 @@ list<MLogRec>&  LogReader::readLog()  //读取登录日志文件并将读取信息保存至list中
 
 void LogReader::backup() throw(BackupException)
 {
-    system("./backup");//调用Linux下的shell脚本文件 进行日志记录wtmpx文件备份
+    string str="./backup "+backup;
+    system(str.c_str);//调用Linux下的shell脚本文件 进行日志记录wtmpx文件备份
 }
 
 void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
