@@ -3,6 +3,7 @@
 #define _DATA_H
 #include <unistd.h>//pid_t等uc数据类型和函数
 #include <cstring>
+#include <sstream>
 
 //test ljm
 //登入登出日志记录
@@ -31,6 +32,12 @@ struct LogRec
       }
    }
 
+   std::string getString()
+   {
+     std::stringstream ss;
+     ss << logname << logip << pid;
+     return ss.str(); 
+   }
 };
 
 //匹配日志记录
