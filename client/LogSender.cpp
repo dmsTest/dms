@@ -19,7 +19,7 @@ void ConsoleSender::sendLog(std::list<MLogRec> &logs)throw(SendException)
 }
 
 SocketSender::SocketSender(const std::string &failFile, short port,const std::string &ip)
-	:LogSender(),m_failFile(failFile),m_port(port),m_ip(ip)
+	:LogSender(),m_failFile(failFile),m_port(port),m_ip(ip),is_closed(false)
 {
 
 }
@@ -32,10 +32,6 @@ void SocketSender::sendLog(std::list<MLogRec> &logs) throw(SendException)
 	saveFailFile(logs);
 }
 
-std::string m_failFile;
-        short m_port;
-        std::string m_ip;
-        int m_sockfd;
 
 void SocketSender::connectServer()
 {
@@ -79,6 +75,7 @@ void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 		{
 			std::cout << "socket error, send error!" << std::endl;
 			close(m_sockfd);
+			is_closed = true;
 			return; 
 		}
 		/*
@@ -116,5 +113,8 @@ void SocketSender::saveFailFile(std::list<MLogRec>& logs) throw(SaveException)
 
 SocketSender::~SocketSender()
 {
-	close(m_sockfd);
+	if(!is_closed)
+	{
+		close(m_sockfd);	
+	}
 }

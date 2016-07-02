@@ -45,6 +45,7 @@ class SocketSender : public LogSender
         short m_port;
         std::string m_ip;
         int m_sockfd;
+        bool is_closed;
 };
 
 template<typename T>

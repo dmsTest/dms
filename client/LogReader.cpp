@@ -13,25 +13,25 @@ LogReader::LogReader(const std::string &logFile, const std::string &loginFile): 
 {
 }
 
-list<MLogRec>&  LogReader::readLog()  //读取登录日志文件并将读取信息保存至list中
+list<MLogRec>&  LogReader::readLog()  //露脕脠隆碌脟脗录脠脮脰戮脦脛录镁虏垄陆芦露脕脠隆脨脜脧垄卤拢麓忙脰脕list脰脨
 {
-    backup();         //调用备份函数进行文件备份
-    readLoginsFile(); //读取上次未匹配记录文件
-    readBackupFile(); //读取日志记录的备份文件
-    match();          //开始登入登出记录匹配
-    saveLoginsFile(); //将未匹配的记录保存在文件中
+    backup();         //碌梅脫脙卤赂路脻潞炉脢媒陆酶脨脨脦脛录镁卤赂路脻
+    readLoginsFile(); //露脕脠隆脡脧麓脦脦麓脝楼脜盲录脟脗录脦脛录镁
+    readBackupFile(); //露脕脠隆脠脮脰戮录脟脗录碌脛卤赂路脻脦脛录镁
+    match();          //驴陋脢录碌脟脠毛碌脟鲁枚录脟脗录脝楼脜盲
+    saveLoginsFile(); //陆芦脦麓脝楼脜盲碌脛录脟脗录卤拢麓忙脭脷脦脛录镁脰脨
     return m_logs;
 }
 
 void LogReader::backup() throw(BackupException)
 {
     string str="./backup "+m_backupFile;
-    system(str.c_str());//调用Linux下的shell脚本文件 进行日志记录wtmpx文件备份
+    system(str.c_str());//碌梅脫脙Linux脧脗碌脛shell陆脜卤戮脦脛录镁 陆酶脨脨脠脮脰戮录脟脗录wtmpx脦脛录镁卤赂路脻
 }
 
-void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
+void LogReader::readBackupFile() throw(BackupException)   //露脕脠隆卤赂路脻碌脛脠脮脰戮脦脛录镁
 {
-    unsigned type=0;//用于判断是登入还是登出
+    unsigned type=0;//脫脙脫脷脜脨露脧脢脟碌脟脠毛禄鹿脢脟碌脟鲁枚
     fstream fin;
     fin.open(m_backupFile.c_str(),ios::binary|ios::in);
     if(!fin.is_open())
@@ -40,7 +40,7 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
 
     }
     fin.seekg(0,ios::end);
-    int fsize = fin.tellg()/372;  //算出备份的日志文件中的登入登出记录数目
+    int fsize = fin.tellg()/372;  //脣茫鲁枚卤赂路脻碌脛脠脮脰戮脦脛录镁脰脨碌脛碌脟脠毛碌脟鲁枚录脟脗录脢媒脛驴
     fin.seekg(0,ios::beg);
     cout<<"Start read backupFile!"<<endl;
     for(int i=0; i<fsize; i++)
@@ -48,15 +48,15 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
         int login_num,logout_num;
         login_num=logout_num=0;
         LogRec logrec;
-        int  pos=i*372;         //设定文件指针每次读取记录时的位置，每次读取都在一条记录的开始处
+        int  pos=i*372;         //脡猫露篓脦脛录镁脰赂脮毛脙驴麓脦露脕脠隆录脟脗录脢卤碌脛脦禄脰脙拢卢脙驴麓脦露脕脠隆露录脭脷脪禄脤玫录脟脗录碌脛驴陋脢录麓娄
         fin.seekg(pos,ios::beg);
-        fin.read((char*)&(logrec.logname),sizeof(logrec.logname));  //读取登录记录的登录名
-        if(logrec.logname[0]!='.')//判断是否为收费用户的记录
+        fin.read((char*)&(logrec.logname),sizeof(logrec.logname));  //露脕脠隆碌脟脗录录脟脗录碌脛碌脟脗录脙没
+        if(logrec.logname[0]!='.')//脜脨露脧脢脟路帽脦陋脢脮路脩脫脙禄搂碌脛录脟脗录
         {
-            fin.seekg(pos+68,ios::beg);  //将文件指针指向第n条记录的登录id位置
-            fin.read((char*)&(logrec.pid),sizeof(logrec.pid));//读取登录id
-            logrec.pid=htonl(logrec.pid);//将数据有网络序转换成主机序
-            fin.seekg(72+pos,ios::beg);  //原理同上
+            fin.seekg(pos+68,ios::beg);  //陆芦脦脛录镁脰赂脮毛脰赂脧貌碌脷n脤玫录脟脗录碌脛碌脟脗录id脦禄脰脙
+            fin.read((char*)&(logrec.pid),sizeof(logrec.pid));//露脕脠隆碌脟脗录id
+            logrec.pid=htonl(logrec.pid);//陆芦脢媒戮脻脫脨脥酶脗莽脨貌脳陋禄禄鲁脡脰梅禄煤脨貌
+            fin.seekg(72+pos,ios::beg);  //脭颅脌铆脥卢脡脧
             fin.read((char*)&type,sizeof(type));
             type = htons(type);
             fin.seekg(80+pos,ios::beg);
@@ -64,25 +64,26 @@ void LogReader::readBackupFile() throw(BackupException)   //读取备份的日志文件
             logrec.logtime = htonl(logrec.logtime);
             fin.seekg(114+pos,ios::beg);
             fin.read((char*)&(logrec.logip),sizeof(logrec.logip));
-            if(type==7)          //如果是7则可以判定是登入记录 把记录写入登入list
+            if(type==7)          //脠莽鹿没脢脟7脭貌驴脡脪脭脜脨露篓脢脟碌脟脠毛录脟脗录 掳脩录脟脗录脨麓脠毛碌脟脠毛list
             {
                 m_logins.push_back(logrec);
                 login_num++;
 
             }
-            else if(type==8)    //如果是8则可以判定是登入记录 把记录写入登出list
+            else if(type==8)    //脠莽鹿没脢脟8脭貌驴脡脪脭脜脨露篓脢脟碌脟脠毛录脟脗录 掳脩录脟脗录脨麓脠毛碌脟鲁枚list
             {
-                m_logouts.push_back(logrec);
+                pair<string,long> item = make_pair(logrec.getString(),logrec.logtime);
+                m_logouts.insert(item);
                 logout_num++;
             }
         }
     }
-    fin.close();  //关闭文件流
+    fin.close();  //鹿脴卤脮脦脛录镁脕梅
     cout<<"loginFile size:"<<m_logins.size()<<endl;
     cout<<"logoutFile size:"<<m_logouts.size()<<endl;
     cout<<"end read backupFile!"<<endl<<endl;
 }
-//获取备份文件名 构造函数中调用初始化m_logFile变量
+//禄帽脠隆卤赂路脻脦脛录镁脙没 鹿鹿脭矛潞炉脢媒脰脨碌梅脫脙鲁玫脢录禄炉m_logFile卤盲脕驴
 std::string LogReader::getWtmpxString()
 {
     time_t now_time;
@@ -95,10 +96,10 @@ std::string LogReader::getWtmpxString()
     return str;
 }
 
-void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息文件
+void LogReader::readLoginsFile() throw(ReadException) //露脕脠隆脡脧麓脦脦麓脝楼脜盲鲁脡鹿娄碌脛脨脜脧垄脦脛录镁
 {
     fstream fin;
-    fin.open(m_loginsFile.c_str(),ios::binary|ios::in); //以二进制写的方式打开m_loginsFile文件
+    fin.open(m_loginsFile.c_str(),ios::binary|ios::in); //脪脭露镁陆酶脰脝脨麓碌脛路陆脢陆麓貌驴陋m_loginsFile脦脛录镁
     if(!fin.is_open())
     {
         cerr<<"Read LoginsFile error!"<<endl;
@@ -111,16 +112,16 @@ void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息
     for(int i=0; i<fsize; i++)
     {
         LogRec logrec;
-        int  pos=i*372;    //文件中每条记录的开始位置
-        fin.seekg(pos,ios::beg);//将文件指针指向一条记录的开始位置
-        fin.read((char*)&(logrec.logname),sizeof(logrec.logname));//读取记录中登录名
-        fin.seekg(pos+68,ios::beg); //将文件指针跳过68字节，指向登录id的信息位置
-        fin.read((char*)&(logrec.pid),sizeof(logrec.pid));//读取id
-        fin.seekg(80+pos,ios::beg);//原理同上
+        int  pos=i*372;    //脦脛录镁脰脨脙驴脤玫录脟脗录碌脛驴陋脢录脦禄脰脙
+        fin.seekg(pos,ios::beg);//陆芦脦脛录镁脰赂脮毛脰赂脧貌脪禄脤玫录脟脗录碌脛驴陋脢录脦禄脰脙
+        fin.read((char*)&(logrec.logname),sizeof(logrec.logname));//露脕脠隆录脟脗录脰脨碌脟脗录脙没
+        fin.seekg(pos+68,ios::beg); //陆芦脦脛录镁脰赂脮毛脤酶鹿媒68脳脰陆脷拢卢脰赂脧貌碌脟脗录id碌脛脨脜脧垄脦禄脰脙
+        fin.read((char*)&(logrec.pid),sizeof(logrec.pid));//露脕脠隆id
+        fin.seekg(80+pos,ios::beg);//脭颅脌铆脥卢脡脧
         fin.read((char*)&(logrec.logtime),sizeof(logrec.logtime));
         fin.seekg(114+pos,ios::beg);
         fin.read((char*)&(logrec.logip),sizeof(logrec.logip));
-        m_logins.push_back(logrec);                   //将读取的未匹配记录插入登入记录list
+        m_logins.push_back(logrec);                   //陆芦露脕脠隆碌脛脦麓脝楼脜盲录脟脗录虏氓脠毛碌脟脠毛录脟脗录list
     }
     fin.close();
     cout<<"total: "<<fsize<<" unmatched data!"<<endl;
@@ -128,18 +129,17 @@ void LogReader::readLoginsFile() throw(ReadException) //读取上次未匹配成功的信息
     cout<<"Read unmatched match data over!"<<endl<<endl;
 }
 
-void LogReader::match() throw(SocketException)              //匹配登入登出数据
+void LogReader::match() throw(SocketException)              //脝楼脜盲碌脟脠毛碌脟鲁枚脢媒戮脻
 {
     cout<<"Start match login data with logout data!"<<endl;
-    list<LogRec>::iterator init;   //指向记录登入信息list的迭代器
-    list<LogRec>::iterator outit;  //指向记录登入信息list的迭代器
-    for(outit=m_logouts.begin(); outit!=m_logouts.end(); outit++)  //双重循环 用登入记录和登出记录逐条比对
+    /*
+    list<LogRec>::iterator init;   //脰赂脧貌录脟脗录碌脟脠毛脨脜脧垄list碌脛碌眉麓煤脝梅
+    list<LogRec>::iterator outit;  //脰赂脧貌录脟脗录碌脟脠毛脨脜脧垄list碌脛碌眉麓煤脝梅
+    for(outit=m_logouts.begin(); outit!=m_logouts.end(); outit++)  //脣芦脰脴脩颅禄路 脫脙碌脟脠毛录脟脗录潞脥碌脟鲁枚录脟脗录脰冒脤玫卤脠露脭
     {
         for(init=m_logins.begin(); init!=m_logins.end(); init++)
         {
-            if(strcmp(outit->logname,init->logname)==0
-                    &&strcmp(outit->logip,init->logip)==0&&
-                    outit->pid==init->pid&&outit->logtime>init->logtime) //if条件成立则匹配成功 把数据写入匹配成功list 切记登入时间必定小于登出时间
+            if(*init == *outit) //if脤玫录镁鲁脡脕垄脭貌脝楼脜盲鲁脡鹿娄 掳脩脢媒戮脻脨麓脠毛脝楼脜盲鲁脡鹿娄list 脟脨录脟碌脟脠毛脢卤录盲卤脴露篓脨隆脫脷碌脟鲁枚脢卤录盲
             {
                 MLogRec mlogrec;
                 strcpy(mlogrec.logname,outit->logname);
@@ -149,16 +149,42 @@ void LogReader::match() throw(SocketException)              //匹配登入登出数据
                 mlogrec.logouttime=outit->logtime;
                 mlogrec.logtime=outit->logtime-init->logtime;
                 m_logs.push_back(mlogrec);
-                init=m_logins.erase(init);         //将匹配完成的登入记录从m_logins登入记录表中删除
+                init=m_logins.erase(init);         //陆芦脝楼脜盲脥锚鲁脡碌脛碌脟脠毛录脟脗录麓脫m_logins碌脟脠毛录脟脗录卤铆脰脨脡戮鲁媒
+                break;
             }
         }
-        outit=m_logouts.erase(outit);             //将匹配完成的登出记录从m_logouts登出记录表中删除
+        outit=m_logouts.erase(outit);             //陆芦脝楼脜盲脥锚鲁脡碌脛碌脟鲁枚录脟脗录麓脫m_logouts碌脟鲁枚录脟脗录卤铆脰脨脡戮鲁媒
     }
+    */
+    list<LogRec>::iterator init = m_logins.begin();
+    while(init != m_logins.end())
+    {
+        string init_str = init->getString();
+        map<string,long>::iterator find_it = m_logouts.find(init_str);
+        if(find_it != m_logouts.end())
+        {
+            MLogRec mlogrec;
+            strcpy(mlogrec.logname,init->logname);
+            strcpy(mlogrec.logip,init->logip);
+            mlogrec.pid = init->pid;
+            mlogrec.logintime = init->logtime;
+            mlogrec.logouttime = find_it->second;
+            mlogrec.logtime = find_it->second - init->logtime;
+            m_logs.push_back(mlogrec);    
+            m_logouts.erase(find_it);
+            init = m_logins.erase(init);
+        }
+        else
+        {
+            ++init;
+        }
+    }
+    m_logouts.clear();//娓呯┖map
     cout<<"total matched:"<<m_logs.size()<<endl;
     cout<<"Match login with logout over!"<<endl<<endl;
 }
 
-void LogReader::saveLoginsFile() throw(SaveException)       //将未匹配成功的记录保存
+void LogReader::saveLoginsFile() throw(SaveException)       //陆芦脦麓脝楼脜盲鲁脡鹿娄碌脛录脟脗录卤拢麓忙
 {
     fstream fout;
     fout.open(m_loginsFile.c_str(),ios::binary|ios::out|ios::app);
