@@ -1,8 +1,9 @@
 //数据对象类型定义
 #ifndef _DATA_H
 #define _DATA_H
-#include<unistd.h>//pid_t等uc数据类型和函数
+#include <unistd.h>//pid_t等uc数据类型和函数
 #include <cstring>
+#include <string>
 
 //匹配日志记录
 struct MLogRec
@@ -31,7 +32,10 @@ struct MLogRec
             return 0;
         }
     }
+
+
 };
+
 
 #endif
 

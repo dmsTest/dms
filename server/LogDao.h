@@ -31,4 +31,5 @@ class MysqlDao : public LogDao
         void insert(const MLogRec& log);
 };
 
+
 #endif // LOGDAO_H
