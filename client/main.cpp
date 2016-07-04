@@ -22,10 +22,10 @@ int main(int argc, char** argv)
 			std::string logFile = "wtmpx";
 			std::string loginsFile = "logins.dat";
 			LogReader reader(logFile,loginsFile);
-			ConsoleSender consoleSender;
-			//SocketSender socketSender("./fail.dat",_port,_ip);
-			//Client client(reader,socketSender);
-			Client client(reader,consoleSender);
+			//ConsoleSender consoleSender;
+			SocketSender socketSender("./fail.dat",_port,_ip);
+			Client client(reader,socketSender);
+			//Client client(reader,consoleSender);
 			client.dataMine();
 		} catch(ClientException& ex)
 		{

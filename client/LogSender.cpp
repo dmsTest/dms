@@ -26,10 +26,10 @@ SocketSender::SocketSender(const std::string &failFile, short port,const std::st
 
 void SocketSender::sendLog(std::list<MLogRec> &logs) throw(SendException)
 {
-	//readFailFile(logs);
+	readFailFile(logs);
 	connectServer();
 	sendData(logs);
-	//saveFailFile(logs);
+	saveFailFile(logs);
 }
 
 
