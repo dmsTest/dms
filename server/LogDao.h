@@ -10,7 +10,7 @@ class LogDao
 {
     public:
         LogDao();
-        virtual void insert(const MLogRec& log) = 0 throw(DBException);
+        virtual void insert(const MLogRec& log) throw(DBException) = 0;
         virtual ~LogDao();
 };
 
@@ -29,7 +29,7 @@ class MysqlDao : public LogDao
     public:
         MysqlDao(const std::string &username, const std::string &password);
         ~MysqlDao();
-        void insert(const MLogRec& log) thro(DBException);
+        void insert(const MLogRec& log) throw(DBException);
 };
 
 #endif // LOGDAO_H
