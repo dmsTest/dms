@@ -20,7 +20,7 @@ FileDao::~FileDao()
 
 }
 
-void FileDao::insert(const MLogRec& log)
+void FileDao::insert(const MLogRec& log) throw(DBException)
 {
 
 }
@@ -35,7 +35,7 @@ MysqlDao::~MysqlDao()
 
 }
 
-void MysqlDao::insert(const MLogRec& log)
+void MysqlDao::insert(const MLogRec& log) throw(DBException)
 {
 
 }
