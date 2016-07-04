@@ -30,7 +30,7 @@ ServerSocket::ServerSocket(short port, const std::string ip)
 
 }
 
-void ServerSocket::acceptClient()
+void ServerSocket::acceptClient() throw(SocketException)
 {
       //4.监听
     listen(sockfd, 100);

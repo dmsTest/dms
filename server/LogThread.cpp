@@ -10,11 +10,6 @@ void LogThread::start()
     run();
 }
 
-void LogThread::run()
-{
-
-}
-
 void* LogThread::run(void* arg)
 {
     int fd = *(int*)arg;
@@ -56,7 +51,7 @@ ClientThread::ClientThread(int connfd) : LogThread(), m_connfd(connfd)
 }
 
 
-void ClientThread::run()
+void ClientThread::run() throw(ThreadException)
 {
 
 }
@@ -76,7 +71,7 @@ StoreThread::~StoreThread()
 
 }
 
-void StoreThread::run()
+void StoreThread::run() throw(ThreadException)
 {
 
 }

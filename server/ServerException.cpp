@@ -13,7 +13,7 @@ ServerException::ServerException(const std::string &str) :m_msg("server is excep
 
 }
 
-ServerException::~ServerException() throw()
+ServerException::~ServerException()
 {
 
 
