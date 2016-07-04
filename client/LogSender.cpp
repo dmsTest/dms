@@ -4,17 +4,17 @@
 void ConsoleSender::sendLog(std::list<MLogRec> &logs)throw(SendException)
 {
 	//write to order_line,then write to the gui list
-	/*
+	
 	for(std::list<MLogRec>::iterator it = logs.begin(); it != logs.end(); ++it)
 	{
 		std::cout << "logname: " << it->logname <<
 			", logip: " << it->logip <<
 			", pid: " << it->pid <<
-			", logintime " << it->logintime <<
+			", logintime: " << it->logintime <<
 			", logouttime: " << it->logouttime <<
 			", logtime: " << it->logtime << std::endl;
 	}
-	*/
+
 	std::cout << "log size: " << logs.size() << std::endl;
 }
 
@@ -26,10 +26,10 @@ SocketSender::SocketSender(const std::string &failFile, short port,const std::st
 
 void SocketSender::sendLog(std::list<MLogRec> &logs) throw(SendException)
 {
-	readFailFile(logs);
+	//readFailFile(logs);
 	connectServer();
 	sendData(logs);
-	saveFailFile(logs);
+	//saveFailFile(logs);
 }
 
 
@@ -68,10 +68,13 @@ void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
 
 void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 {
-	for(std::list<MLogRec>::iterator it = logs.begin(); it != logs.end(); ++it)
+	std::list<MLogRec>::iterator it = logs.begin();
+	while(!logs.empty())
 	{
-		ssize_t retval = write(m_sockfd,(char*)(&(*it)),sizeof(MLogRec));
-		if(retval != 0)
+		//char send_buf[sizeof(MLogRec)];
+		//memcpy(send_buf,&(*it),sizeof(MLogRec));
+		ssize_t retval = send(m_sockfd,(char*)(&(*it)),sizeof(MLogRec),0);
+		if(retval == -1)
 		{
 			std::cout << "socket error, send error!" << std::endl;
 			close(m_sockfd);
@@ -92,6 +95,16 @@ void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 		write(m_sockfd,s_logouttime.c_str(),s_logouttime.size());
 		write(m_sockfd,s_logtime.c_str(),s_logtime.size());
 		*/
+		it = logs.erase(it);
+	}
+	char bye[5] = "BYE";
+	ssize_t retval = send(m_sockfd,bye,sizeof(bye),0);
+	if(retval == -1)
+	{
+		std::cout << "socket error, send error!" << std::endl;
+		close(m_sockfd);
+		is_closed = true;
+		return;
 	}
 
 }
@@ -99,15 +112,12 @@ void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 void SocketSender::saveFailFile(std::list<MLogRec>& logs) throw(SaveException)
 {
 	//
-	if(m_sockfd == -1)
+	std::ofstream ofs(m_failFile.c_str());
+	for(std::list<MLogRec>::iterator it = logs.begin(); it != logs.end(); ++it)
 	{
-		std::ofstream ofs(m_failFile.c_str());
-		for(std::list<MLogRec>::iterator it = logs.begin(); it != logs.end(); ++it)
-		{
-			ofs << it->logname << " " << it->logip << " " << it->pid <<  " "
-					<< it->logintime << " " << it->logouttime << " "
-						<< it->logtime << std::endl;
-		}
+		ofs << it->logname << " " << it->logip << " " << it->pid <<  " "
+				<< it->logintime << " " << it->logouttime << " "
+					<< it->logtime << std::endl;
 	}
 }
 
