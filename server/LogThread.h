@@ -10,10 +10,10 @@ class LogThread
     public:
         LogThread();
         void start();
-        virtual void run() = 0;
+        virtual void run();
         virtual ~LogThread();
     private:
-        static void run(void* arg);
+        static void* run(void* arg);
 };
 
 class ClientThread : public LogThread
