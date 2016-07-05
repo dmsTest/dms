@@ -43,13 +43,17 @@ void MysqlDao::insert(const MLogRec& log) throw(DBException)
 	pstmt->setBigInt(4,log.logintime);
 	pstmt->setBigInt(5,log.logouttime);
 	pstmt->setBigInt(6,log.logtime);
-	pstmt->executeUpdate();
-	std::cout << "insert success!" << std::endl;
+	bool is_success = pstmt->executeUpdate();
+	if(is_success)
+		std::cout << "insert success!" << std::endl;
+	else
+		std::cout << "inset fail!" << std::endl;
 }
 
 MysqlDao::~MysqlDao()
 {
 	delete pstmt;
+	con.close();
 	delete con;
 	delete driver;
 }
