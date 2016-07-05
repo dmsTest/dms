@@ -6,7 +6,8 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <errno.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 #define errExitEN(en, msg) \
             do { errno = en; perror(msg); exit(EXIT_FAILURE); \
         } while (0)

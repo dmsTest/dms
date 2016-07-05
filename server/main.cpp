@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "data.h"
 #include "LogDao.h"
-
+#include "Server.h"
 using namespace std;
 
 short _port = 8888;
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
     //9. 关闭描述符
     close(sockfd);
     */
-    MysqlDao sqlDao("root","");
+    MysqlDao sqlDao("root","123456");
     Server server(sqlDao, _port, _ip);
     server.dataMine();
     return 0;

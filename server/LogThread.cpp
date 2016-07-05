@@ -1,9 +1,8 @@
 #include "LogThread.h"
-#include <cstdio.h>
+#include <stdio.h>
 #include <cstring>
 #include <unistd.h>
 #include <list>
-#include "LogQueue.h"
 
 LogThread::LogThread()
 {
@@ -23,8 +22,8 @@ void LogThread::start()
 
 void* LogThread::run(void* arg)
 {
-    static_cast<Thread*>(arg)->run();
-    
+    static_cast<LogThread*>(arg)->run();
+    return NULL; 
 }
 
 LogThread::~LogThread()

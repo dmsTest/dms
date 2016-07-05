@@ -10,7 +10,7 @@ class ServerException : public std::exception
 public:
     ServerException();
     ServerException(const std::string &str);
-    virtual ~ServerException();
+    virtual ~ServerException() throw();
 private:
     std::string m_msg;
 

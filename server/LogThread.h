@@ -6,13 +6,18 @@
 #include "data.h"
 #include "ServerException.h"
 #include <pthread.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include "LogQueue.h"
+
+static LogQueue logqueue;
 
 class LogThread
 {
     public:
         LogThread();
         void start();
-        virtual void run() = 0 throw(ThreadException);
+        virtual void run() throw(ThreadException) = 0;
         virtual ~LogThread();
     private:
         static void* run(void* arg);
