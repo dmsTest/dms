@@ -10,14 +10,14 @@ LogDao::~LogDao()
     //dtor
 }
 
-FileDao::FileDao(const std::string& path) : m_ofs(path,ios::app)
+FileDao::FileDao(const std::string& path) : m_ofs(path.c_str(),std::ofstream::out | std::ofstream::app)
 {
 
 }
 
 FileDao::~FileDao()
 {
-
+	m_ofs.close();
 }
 
 void FileDao::insert(const MLogRec& log) throw(DBException)
@@ -40,9 +40,9 @@ void MysqlDao::insert(const MLogRec& log) throw(DBException)
 	pstmt->setString(1,log.logname);
 	pstmt->setString(2,log.logip);
 	pstmt->setInt(3,log.pid);
-	pstmt->setBigInt(4,log.logintime);
-	pstmt->setBigInt(5,log.logouttime);
-	pstmt->setBigInt(6,log.logtime);
+	pstmt->setString(4,converTToString<long>(log.logintime));
+	pstmt->setString(5,converTToString<long>(log.logouttime));
+	pstmt->setString(6,converTToString<long>(log.logtime));
 	bool is_success = pstmt->executeUpdate();
 	if(is_success)
 		std::cout << "insert success!" << std::endl;
@@ -53,7 +53,6 @@ void MysqlDao::insert(const MLogRec& log) throw(DBException)
 MysqlDao::~MysqlDao()
 {
 	delete pstmt;
-	con.close();
+	con->close();
 	delete con;
-	delete driver;
 }
