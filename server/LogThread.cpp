@@ -13,7 +13,7 @@ LogThread::LogThread()
 void LogThread::start()
 {
     pthread_t tid;
-    int error=pthread_creat(&tid,NULL,run,this);
+    int error=pthread_create(&tid,NULL,run,this);
     if(error)
     {
         printf("%s\n",strerror(tid));
@@ -73,10 +73,7 @@ StoreThread::~StoreThread()
 
 void StoreThread::run() throw(ThreadException)
 {
-	list<MLogRec>::iterator it;
         MLogRec mlogrec;
-	for(it=logqueue.mlogs.begin();it!=logqueue.mlogs.end(),it++){
-            logqueue.pop(mlogrec);
-	    dao.insert(mlogrec);
-	}
+        logqueue.pop(mlogrec);
+	dao.insert(mlogrec);
 }
