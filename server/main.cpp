@@ -4,7 +4,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "data.h"
-#include <pthread.h>
 #include "LogDao.h"
 
 using namespace std;

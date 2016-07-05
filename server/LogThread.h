@@ -5,6 +5,7 @@
 #include "LogDao.h"
 #include "data.h"
 #include "ServerException.h"
+#include <pthread.h>
 
 class LogThread
 {
