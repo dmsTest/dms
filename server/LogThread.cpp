@@ -1,4 +1,9 @@
 #include "LogThread.h"
+#include <cstdio.h>
+#include <cstring>
+#include <unistd.h>
+#include <list>
+#include "LogQueue.h"
 
 LogThread::LogThread()
 {
@@ -7,32 +12,19 @@ LogThread::LogThread()
 
 void LogThread::start()
 {
+    pthread_t tid;
+    int error=pthread_creat(&tid,NULL,run,this);
+    if(error)
+    {
+        printf("%s\n",strerror(tid));
+    }
     run();
 }
 
 void* LogThread::run(void* arg)
 {
-    int fd = *(int*)arg;
-    while(1)
-    {
-        //7. 接收数据
-        char buf[96];
-        recv(fd, buf, sizeof(buf), 0);
-        //cout << sizeof(MLogRec) << endl;
-        //printf("%s\n", buf);
-        if(!strcmp(buf, "BYE"))
-            break;
-        MLogRec item;
-        memcpy(&item,buf,sizeof(buf));
-
-        //then,insert to mysql
-        std::cout << "logname: " << item.logname <<
-                  ", logip: " << item.logip <<
-                  ", pid: " << item.pid <<
-                  ", logintime: " << item.logintime <<
-                  ", logouttime: " << item.logouttime <<
-                  ", logtime: " << item.logtime << std::endl;
-    }
+    static_cast<Thread*>(arg)->run();
+    
 }
 
 LogThread::~LogThread()
@@ -40,7 +32,7 @@ LogThread::~LogThread()
     //dtor
 }
 
-ClientThread::ClientThread() : LogThread()
+ClientThread::ClientThread() : LogThread()       //ClientThread的构造函数
 {
 
 }
@@ -53,7 +45,15 @@ ClientThread::ClientThread(int connfd) : LogThread(), m_connfd(connfd)
 
 void ClientThread::run() throw(ThreadException)
 {
-
+    while(1)
+    {
+        //7. 接收数据
+        char buf[sizeof(MLogRec)];
+        recv(m_connfd, buf, sizeof(buf), 0);
+        MLogRec item;
+        memcpy(&item,buf,sizeof(buf));
+        logqueue.push(item);
+    }
 }
 
 ClientThread::~ClientThread()
@@ -61,7 +61,7 @@ ClientThread::~ClientThread()
 
 }
 
-StoreThread::StoreThread(LogDao& dao) : LogThread(),m_dao(dao)
+StoreThread::StoreThread(LogDao& dao) : LogThread(),m_dao(dao)   //StoreThread的构造函数
 {
 
 }
@@ -73,5 +73,10 @@ StoreThread::~StoreThread()
 
 void StoreThread::run() throw(ThreadException)
 {
-
+	list<MLogRec>::iterator it;
+        MLogRec mlogrec;
+	for(it=logqueue.mlogs.begin();it!=logqueue.mlogs.end(),it++){
+            logqueue.pop(mlogrec);
+	    dao.insert(mlogrec);
+	}
 }
