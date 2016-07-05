@@ -4,6 +4,26 @@
 #include <unistd.h>//pid_t等uc数据类型和函数
 #include <cstring>
 #include <string>
+#include <iostream>
+#include <sstream>
+
+//type to string
+template<typename T>
+std::string converTToString(const T &value)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss.str();	
+}
+
+//string to type
+template<typename T>
+T converStringToT(const std::string &str)
+{
+	std::stringstream ss;
+	ss << str;
+	return ss.str();
+}
 
 //匹配日志记录
 struct MLogRec
