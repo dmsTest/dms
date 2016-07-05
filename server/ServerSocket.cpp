@@ -6,7 +6,7 @@ ServerSocket::ServerSocket(short port, const std::string ip)
 // 1.获取socket描述
     m_sockfd = socket(AF_INET,
                         SOCK_STREAM, 0);
-    if(-1 == sockfd)
+    if(-1 == m_sockfd)
     {
         perror("socket");
         return;
@@ -18,7 +18,7 @@ ServerSocket::ServerSocket(short port, const std::string ip)
     addr.sin_addr.s_addr =
         inet_addr("127.0.0.1");
     //3.绑定IP地址
-    int ret = bind(sockfd,
+    int ret = bind(m_sockfd,
                    (struct sockaddr*)&addr,
                    sizeof(addr));
     if(-1 == ret)
@@ -33,7 +33,7 @@ ServerSocket::ServerSocket(short port, const std::string ip)
 void ServerSocket::acceptClient() throw(SocketException)
 {
       //4.监听
-    listen(sockfd, 100);
+    listen(m_sockfd, 100);
     while(1)
     {
         struct sockaddr_in from;
@@ -41,7 +41,7 @@ void ServerSocket::acceptClient() throw(SocketException)
         while(1)
         {
             // 5.接收来接收客户端连接
-            int fd = accept(sockfd,
+            int fd = accept(m_sockfd,
                             (struct sockaddr*)&from,
                             (socklen_t*)&len);
             //6.创建线程，接收来自客户端的数据
@@ -57,5 +57,5 @@ ServerSocket::~ServerSocket()
 {
     //dtor
     //9. 关闭描述符
-    close(sockfd);
+    close(m_sockfd);
 }
