@@ -98,8 +98,6 @@ void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 		*/
 		it = logs.erase(it);
 	}
-	char bye[5] = "BYE";
-	send(m_sockfd,bye,sizeof(bye),0);
 	close(m_sockfd);
 	is_closed = true;
 	std::cout << "send: " << num << " data!"<< std::endl;

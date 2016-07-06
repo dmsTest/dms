@@ -56,8 +56,8 @@ void ClientThread::run() throw(ThreadException)
 		  //  std::cout << "-------accept data--------" << std::endl;
 		//7. 接收数据
 		char buf[sizeof(MLogRec)];
-		recv(m_connfd, buf, sizeof(buf), 0);
-		if(!strcmp(buf, "BYE"))
+		int rel = recv(m_connfd, buf, sizeof(buf), 0);
+		if(rel == 0)
 			break;
 		MLogRec item;
 		memcpy(&item,buf,sizeof(buf));

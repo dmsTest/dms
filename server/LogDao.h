@@ -1,6 +1,8 @@
 #ifndef LOGDAO_H
 #define LOGDAO_H
 
+#include <stdlib.h>
+#include <time.h>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -35,6 +37,8 @@ class MysqlDao : public LogDao
     public:
         MysqlDao(const std::string &username, const std::string &password);
         ~MysqlDao();
+	std::string getStringFromLong(long);
+	std::string getStringFromTime(long);
         void insert(const MLogRec& log) throw(DBException);
     private:
         sql::Driver *driver;
