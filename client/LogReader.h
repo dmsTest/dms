@@ -23,7 +23,7 @@ private:
     string m_loginsFile;      //未匹配的日志记录文件
     string m_backupFile;      //备份的日志记录文件
     list<LogRec> m_logins;    //登入记录表
-    map<string,long> m_logouts;   //登出记录表,key为logname+logip+pid,value为logtime
+    multimap<string,long> m_logouts;   //登出记录表,key为logname+logip+pid,value为logtime
     list<MLogRec> m_logs;     //匹配成功的日志记录表
 
     void backup() throw(BackupException);  //备份日志记录

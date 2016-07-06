@@ -43,10 +43,10 @@ void LogReader::readBackupFile() throw(BackupException)   //¶ÁÈ¡±¸·ÝµÄ
     int fsize = fin.tellg()/372;  //Ëã³ö±¸·ÝµÄÈÕÖ¾ÎÄ¼þÖÐµÄµÇÈëµÇ³ö¼ÇÂ¼ÊýÄ¿
     fin.seekg(0,ios::beg);
     cout<<"Start read backupFile!"<<endl;
+    int login_num,logout_num;
+    login_num=logout_num=0;
     for(int i=0; i<fsize; i++)
     {
-        int login_num,logout_num;
-        login_num=logout_num=0;
         LogRec logrec;
         int  pos=i*372;         //Éè¶¨ÎÄ¼þÖ¸ÕëÃ¿´Î¶ÁÈ¡¼ÇÂ¼Ê±µÄÎ»ÖÃ£¬Ã¿´Î¶ÁÈ¡¶¼ÔÚÒ»Ìõ¼ÇÂ¼µÄ¿ªÊ¼´¦
         fin.seekg(pos,ios::beg);
@@ -80,7 +80,7 @@ void LogReader::readBackupFile() throw(BackupException)   //¶ÁÈ¡±¸·ÝµÄ
     }
     fin.close();  //¹Ø±ÕÎÄ¼þÁ÷
     cout<<"loginFile size:"<<m_logins.size()<<endl;
-    cout<<"logoutFile size:"<<m_logouts.size()<<endl;
+    cout<<"logoutFile size:"<< m_logouts.size()<<endl;
     cout<<"end read backupFile!"<<endl<<endl;
 }
 //»ñÈ¡±¸·ÝÎÄ¼þÃû ¹¹Ôìº¯ÊýÖÐµ÷ÓÃ³õÊ¼»¯m_logFile±äÁ¿
@@ -160,7 +160,7 @@ void LogReader::match() throw(SocketException)              //Æ¥ÅäµÇÈëµ
     while(init != m_logins.end())
     {
         string init_str = init->getString();
-        map<string,long>::iterator find_it = m_logouts.find(init_str);
+        multimap<string,long>::iterator find_it = m_logouts.find(init_str);
         if(find_it != m_logouts.end())
         {
             MLogRec mlogrec;

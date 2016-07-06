@@ -8,6 +8,7 @@ Server::Server(LogDao &dao, short port, const std::string ip) : m_store(dao),m_s
 void Server::dataMine()
 {
     m_store.start();
+    std::cout << "--------start accept client--------" << std::endl;
     m_socket.acceptClient();
 }
 

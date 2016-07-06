@@ -36,7 +36,7 @@ MysqlDao::MysqlDao(const std::string &username, const std::string &passwd)
 
 void MysqlDao::insert(const MLogRec& log) throw(DBException)
 {
-	pstmt = con->prepareStatement("insert into data values(?,?,?,?,?,?)");
+	pstmt = con->prepareStatement("insert into data (logname,logip,pid,logintime,logouttime,logtime) values(?,?,?,?,?,?)");
 	pstmt->setString(1,log.logname);
 	pstmt->setString(2,log.logip);
 	pstmt->setInt(3,log.pid);
@@ -45,7 +45,7 @@ void MysqlDao::insert(const MLogRec& log) throw(DBException)
 	pstmt->setString(6,converTToString<long>(log.logtime));
 	bool is_success = pstmt->executeUpdate();
 	if(is_success)
-		std::cout << "insert success!" << std::endl;
+		;	//std::cout << "insert success!" << std::endl;
 	else
 		std::cout << "inset fail!" << std::endl;
 }

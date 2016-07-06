@@ -13,11 +13,14 @@ LogQueue::LogQueue()
 LogQueue& LogQueue::push(const MLogRec &log)
 {
     //add mutex
+    // std::cout << "-------push queue-------" << std::endl;
     int s = pthread_mutex_lock(&m_mutex);
     if(s != 0)
         errExitEN(s,"pthread_mutex_lock");
     m_logs.push_back(log);
+    usleep(1000);
     s = pthread_mutex_unlock(&m_mutex);
+   // std::cout << "--------push queue end------" << std::endl;
     if(s != 0)
         errExitEN(s,"pthread_mutex_unlock");
     s = pthread_cond_signal(&m_cond);
@@ -34,15 +37,19 @@ LogQueue& LogQueue::pop(MLogRec &log)
         errExitEN(s,"pthread_mutex_lock");
     while(m_logs.empty())
     {
+	// std::cout << "-------wait------ " << std::endl;
         s = pthread_cond_wait(&m_cond,&m_mutex);
         if(s != 0)
         {
+	//	std::cout << "---------s!=0------" <<std::endl;
             errExitEN(s,"pthread_cond_wait");
         }
     }
     log= m_logs.front();
     m_logs.pop_front();
+    usleep(1000);
     s = pthread_mutex_unlock(&m_mutex);
+   // std::cout << "--------pop queue-------" << std::endl;
     if(s != 0)
         errExitEN(s,"pthread_mutex_unlock");
     return *this;

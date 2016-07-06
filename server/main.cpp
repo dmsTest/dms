@@ -85,6 +85,7 @@ int main(int argc, char **argv)
     //9. 关闭描述符
     close(sockfd);
     */
+   // FileDao dao("./data.dat");
     MysqlDao sqlDao("root","123456");
     Server server(sqlDao, _port, _ip);
     server.dataMine();

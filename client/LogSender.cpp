@@ -14,7 +14,7 @@ void ConsoleSender::sendLog(std::list<MLogRec> &logs)throw(SendException)
 			", logouttime: " << it->logouttime <<
 			", logtime: " << it->logtime << std::endl;
 	}
-
+	logs.clear();
 	std::cout << "log size: " << logs.size() << std::endl;
 }
 
@@ -41,7 +41,15 @@ void SocketSender::connectServer()
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = inet_addr(m_ip.c_str());
     serv_addr.sin_port = htons(m_port);
-    connect(m_sockfd,(struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    int fd = connect(m_sockfd,(struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    if(fd != -1)
+    {
+	    std::cout << "connect success!" << std::endl;
+    }
+    else
+    {
+	    std::cout << "connect fail!" << std::endl;
+    }
 }
 
 void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
@@ -69,7 +77,8 @@ void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
 void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 {
 	std::list<MLogRec>::iterator it = logs.begin();
-	while(!logs.empty())
+	int num = 0;
+	while(it!=logs.end())
 	{
 		//char send_buf[sizeof(MLogRec)];
 		//memcpy(send_buf,&(*it),sizeof(MLogRec));
@@ -81,32 +90,19 @@ void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
 			is_closed = true;
 			return; 
 		}
+		++num;
 		/*
-		write(m_sockfd,it->logname,sizeof(it->logname));
-		write(m_sockfd,it->logip,sizeof(it->logip));
-
-		std::string s_pid = converTToString<pid_t>(it->pid);
-		std::string s_logintime = converTToString<long>(it->logintime);
-		std::string s_logouttime = converTToString<long>(it->logouttime);
-		std::string s_logtime = converTToString<long>(it->logtime);
-
-		write(m_sockfd,s_pid.c_str(),s_pid.size());
-		write(m_sockfd,s_logintime.c_str(),s_logintime.size());
-		write(m_sockfd,s_logouttime.c_str(),s_logouttime.size());
-		write(m_sockfd,s_logtime.c_str(),s_logtime.size());
+		std::cout << "logname: " << it->logname << ", logip: " << it->logip
+		       << ", pid: " << 	it->pid << ", logintime: " << it->logintime
+		       		<< ", logouttime: " << it->logouttime << "logtime: " << it->logtime << std::endl;
 		*/
 		it = logs.erase(it);
 	}
 	char bye[5] = "BYE";
-	ssize_t retval = send(m_sockfd,bye,sizeof(bye),0);
-	if(retval == -1)
-	{
-		std::cout << "socket error, send error!" << std::endl;
-		close(m_sockfd);
-		is_closed = true;
-		return;
-	}
-
+	send(m_sockfd,bye,sizeof(bye),0);
+	close(m_sockfd);
+	is_closed = true;
+	std::cout << "send: " << num << " data!"<< std::endl;
 }
 
 void SocketSender::saveFailFile(std::list<MLogRec>& logs) throw(SaveException)

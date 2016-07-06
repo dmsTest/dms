@@ -27,13 +27,15 @@ ServerSocket::ServerSocket(short port, const std::string ip)
         return;
     }
     printf("bind ok!\n");
-
+    std::cout << "-------start listen--------" << std::endl;
+    //4.监听
+    listen(m_sockfd, 100);
+    std::cout << "-------listen----------" << std::endl;
 }
 
 void ServerSocket::acceptClient() throw(SocketException)
 {
-      //4.监听
-    listen(m_sockfd, 100);
+    std::cout << "-------accept----------" << std::endl;
     while(1)
     {
         struct sockaddr_in from;
@@ -47,8 +49,11 @@ void ServerSocket::acceptClient() throw(SocketException)
             //6.创建线程，接收来自客户端的数据
             //pthread_t tid;
             //pthread_create(&tid, NULL, task, &fd);
-            ClientThread clientThread(fd);
-            clientThread.start();
+	    if(fd != -1)
+	    {    
+		    std::cout << "------client arrive------" << std::endl;
+            	(new ClientThread(fd))->start();
+	    }
         }
     }
 }

@@ -23,6 +23,7 @@ int main(int argc, char** argv)
 			std::string loginsFile = "logins.dat";
 			LogReader reader(logFile,loginsFile);
 			//ConsoleSender consoleSender;
+			std::cout << "---------socket sender-----" << std::endl;
 			SocketSender socketSender("./fail.dat",_port,_ip);
 			Client client(reader,socketSender);
 			//Client client(reader,consoleSender);

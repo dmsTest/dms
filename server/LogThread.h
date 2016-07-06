@@ -20,7 +20,7 @@ class LogThread
         virtual void run() throw(ThreadException) = 0;
         virtual ~LogThread();
     private:
-        static void* run(void* arg);
+        static void* task(void* arg);
 };
 
 class ClientThread : public LogThread
