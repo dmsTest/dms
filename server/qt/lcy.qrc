@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/lcy">
+        <file>c.png</file>
+    </qresource>
+</RCC>
