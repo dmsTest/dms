@@ -40,6 +40,24 @@ struct LogRec
    }
 };
 
+enum MsgType { reg=0,login,data };
+
+//register msg
+struct MRegister
+{
+	char username[32];
+	char password[32];
+	char gender[4];
+	char phone[12];
+};
+
+//login msg
+struct MLogin
+{
+	char username[32];
+	char password[32];
+};
+
 //匹配日志记录
 struct MLogRec
 {
@@ -49,6 +67,27 @@ struct MLogRec
    long logintime;
    long logouttime;
    long logtime;
+   
+   MLogRec(const MLogRec &right)
+   {
+	strcpy(logname,right.logname);
+	strcpy(logip,right.logip);
+	pid = right.pid;
+	logintime = right.logintime;
+	logouttime = right.logouttime;
+	logtime = right.logtime;
+   }
+
+   MLogRec& operator=(const MLogRec &right)
+   {
+	strcpy(logname,right.logname);
+	strcpy(logip,right.logip);
+	pid = right.pid;
+	logintime = right.logintime;
+	logouttime = right.logouttime;
+	logtime = right.logtime;
+	return *this;	
+   }
 
    bool operator!=(const MLogRec &right)
    {
@@ -67,6 +106,17 @@ struct MLogRec
             return 0;
         }
     }
+};
+
+struct Msg
+{
+	enum MsgType type;
+	union
+	{
+		MRegister reg;
+		MLogin login;
+		MLogRec logdata;
+	};
 };
 
 #endif
