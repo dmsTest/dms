@@ -3,7 +3,7 @@ OBJS=ServerException.o LogDao.o ServerSocket.o LogThread.o LogQueue.o Server.o m
 #main.o Server.o LogQueue.o LogThread.o LogDao.o ServerException.o ServerSocket.o
 CC=g++
 RM=rm -rf
-CFLAGS=-c -Wall -I.
+CFLAGS=-c -Wall -std=c++11 -I.
 LIBS = -lpthread -lmysqlcppconn
 $(PROJ):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)

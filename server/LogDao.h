@@ -13,6 +13,8 @@
 #include <cppconn/exception.h>
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
+#include <cppconn/resultset.h>
+#include <cstring>
 
 class LogDao
 {
@@ -40,6 +42,8 @@ class MysqlDao : public LogDao
 	std::string getStringFromLong(long);
 	std::string getStringFromTime(long);
         void insert(const MLogRec& log) throw(DBException);
+	bool queryUser(MLogin login);
+	bool insertUser(MRegister reg);
     private:
         sql::Driver *driver;
         sql::Connection *con;

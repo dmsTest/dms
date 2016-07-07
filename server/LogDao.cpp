@@ -75,6 +75,33 @@ void MysqlDao::insert(const MLogRec& log) throw(DBException)
 		std::cout << "inset fail!" << std::endl;
 }
 
+bool MysqlDao::queryUser(MLogin login)
+{
+	pstmt = con->prepareStatement("select password from user where username=?");
+	pstmt->setString(1,login.username);
+	sql::ResultSet *rs = pstmt->executeQuery();
+	bool isTrue = false;
+	while(rs->next())
+	{
+		if(strcmp(login.password,rs->getString(1).c_str())==0)
+		{
+			isTrue = true;
+		}
+	}
+	delete rs;
+	return isTrue;
+}
+
+bool MysqlDao::insertUser(MRegister reg)
+{
+	pstmt = con->prepareStatement("insert into user (username,password,gender,phone) values(?,?,?,?)");
+	pstmt->setString(1,reg.username);
+	pstmt->setString(2,reg.password);
+	pstmt->setString(3,reg.gender);
+	pstmt->setString(4,reg.phone);
+	return pstmt->executeUpdate();
+}
+
 MysqlDao::~MysqlDao()
 {
 	delete pstmt;

@@ -25,6 +25,23 @@ T converStringToT(const std::string &str)
 	return ss.str();
 }
 
+enum MsgType { REG=0,LOGIN,DATA  };
+//register msg
+struct MRegister
+{
+    char username[32];
+    char password[32];
+    char gender[4];
+    char phone[12];
+};
+
+//login msg
+struct MLogin
+{
+    char username[32];
+    char password[32];
+};
+
 //匹配日志记录
 struct MLogRec
 {
@@ -34,6 +51,17 @@ struct MLogRec
     long logintime;
     long logouttime;
     long logtime;
+
+    MLogRec& operator=(const MLogRec &right)
+    {
+        strcpy(logname,right.logname);
+        strcpy(logip,right.logip);
+	pid = right.pid;
+        logintime = right.logintime;
+        logouttime = right.logouttime;
+        logtime = right.logtime;
+	return *this;
+    }
 
     bool operator!=(const MLogRec &right)
     {
@@ -56,6 +84,16 @@ struct MLogRec
 
 };
 
+struct Msg
+{
+       enum MsgType type;
+       struct
+       {
+         struct MRegister reg;
+	 struct MLogin login;
+	 struct MLogRec logdata;	 
+       } data;
+};
 
 #endif
 

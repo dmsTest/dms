@@ -40,7 +40,7 @@ struct LogRec
    }
 };
 
-enum MsgType { reg=0,login,data };
+enum MsgType { REG=0,LOGIN,DATA };
 
 //register msg
 struct MRegister
@@ -67,6 +67,7 @@ struct MLogRec
    long logintime;
    long logouttime;
    long logtime;
+   MLogRec() {}
    
    MLogRec(const MLogRec &right)
    {
@@ -111,12 +112,12 @@ struct MLogRec
 struct Msg
 {
 	enum MsgType type;
-	union
+	struct	
 	{
 		MRegister reg;
 		MLogin login;
 		MLogRec logdata;
-	};
+	} data;
 };
 
 #endif
