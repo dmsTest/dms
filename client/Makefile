@@ -2,7 +2,7 @@ PROJ=client
 OBJS=main.o Client.o LogReader.o LogSender.o ClientException.o
 CC=g++
 RM=rm -rf
-CFLAGS=-c -Wall -std=c++11 -I.
+CFLAGS=-c -Wall -std=c++0x -I.
 $(PROJ):$(OBJS)
 	$(CC) $^ -o $@
 %.o:%.cpp

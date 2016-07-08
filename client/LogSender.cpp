@@ -27,8 +27,19 @@ SocketSender::SocketSender(const std::string &failFile, short port,const std::st
 void SocketSender::sendLog(std::list<MLogRec> &logs) throw(SendException)
 {
 	readFailFile(logs);
-	connectServer();
-	sendData(logs);
+//	sendData(logs);
+	std::list<MLogRec>::iterator it = logs.begin();
+	while(it != logs.end())
+	{
+		Msg msg;
+		msg.type = DATA;
+		msg.data.logdata = *it;	
+		bool isSend = sendData(msg);
+		if(isSend)
+			it = logs.erase(it);
+		else
+			break;
+	}
 	saveFailFile(logs);
 }
 
@@ -74,33 +85,43 @@ void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
 	}
 }
 
-void SocketSender::sendData(std::list<MLogRec>& logs) throw(SendException)
+bool SocketSender::recvData() throw(SendException)
 {
-	std::list<MLogRec>::iterator it = logs.begin();
-	int num = 0;
-	while(it!=logs.end())
+	//recv from server("yes" or "no")
+	while(1)
 	{
-		//char send_buf[sizeof(MLogRec)];
-		//memcpy(send_buf,&(*it),sizeof(MLogRec));
-		ssize_t retval = send(m_sockfd,(char*)(&(*it)),sizeof(MLogRec),0);
-		if(retval == -1)
+		char buf[5];
+		int rel = recv(m_sockfd,buf,sizeof(buf),0);
+		std::cout << buf << std::endl;
+		if(rel != 0)
 		{
-			std::cout << "socket error, send error!" << std::endl;
-			close(m_sockfd);
-			is_closed = true;
-			return; 
+			if(strcmp(buf,"yes")==0)
+				return true;
+			else
+				return false;
 		}
-		++num;
+	}
+	return false;
+}
+
+bool SocketSender::sendData(Msg &msg) throw(SendException)
+{
+	//need update
+	ssize_t retval = send(m_sockfd,(char*)(&(msg)),sizeof(Msg),0);
+	if(retval == -1)
+	{
+		std::cout << "socket error, send error!" << std::endl;
+		close(m_sockfd);
+		is_closed = true;
+		return false; 
+	}
 		/*
 		std::cout << "logname: " << it->logname << ", logip: " << it->logip
 		       << ", pid: " << 	it->pid << ", logintime: " << it->logintime
 		       		<< ", logouttime: " << it->logouttime << "logtime: " << it->logtime << std::endl;
 		*/
-		it = logs.erase(it);
-	}
-	close(m_sockfd);
-	is_closed = true;
-	std::cout << "send: " << num << " data!"<< std::endl;
+	
+	return true;
 }
 
 void SocketSender::saveFailFile(std::list<MLogRec>& logs) throw(SaveException)

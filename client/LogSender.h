@@ -38,8 +38,9 @@ class SocketSender : public LogSender
         void sendLog(std::list<MLogRec> &logs) throw(SendException);
         void connectServer();
         void readFailFile(std::list<MLogRec>& logs) throw(ReadException);
-        void sendData(std::list<MLogRec>& logs) throw(SendException);
+        bool sendData(Msg &msg) throw(SendException);
         void saveFailFile(std::list<MLogRec>& logs) throw(SaveException);
+	bool recvData() throw(SendException);
     private:
         std::string m_failFile;
         short m_port;
