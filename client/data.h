@@ -14,6 +14,7 @@ struct LogRec
    pid_t pid;            //登入进程号
    long logtime;         //登入或登出时间
 
+   /*
    bool operator!=(const LogRec &right)
    {
       return !(*this==right);
@@ -31,7 +32,7 @@ struct LogRec
          return false;
       }
    }
-
+   */
    std::string getString()
    {
      std::stringstream ss;
@@ -61,12 +62,14 @@ struct MLogin
 //匹配日志记录
 struct MLogRec
 {
+   char username[32];
    char logname[32];
    char logip[32];
    pid_t pid;
    long logintime;
    long logouttime;
    long logtime;
+   /*
    MLogRec() {}
    
    MLogRec(const MLogRec &right)
@@ -107,12 +110,24 @@ struct MLogRec
             return 0;
         }
     }
+    */
 };
 
+/*
+void copyMLogRec(MLogRec &left,const MLogRec &right)
+{
+	strcpy(left.logname,right.logname);
+	strcpy(left.logip,right.logip);
+	left.pid = right.pid;
+	left.logintime = right.logintime;
+	left.logouttime = right.logouttime;
+	left.logtime = right.logtime;	
+}
+*/
 struct Msg
 {
 	enum MsgType type;
-	struct	
+	union	
 	{
 		MRegister reg;
 		MLogin login;

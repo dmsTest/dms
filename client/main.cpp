@@ -16,6 +16,7 @@ using namespace std;
 std::string _ip = "127.0.0.1";
 short _port = 8888;
 SocketSender socketSender("./fail.dat",_port,_ip);
+extern std::string g_username;
 
 bool registerFunc(Msg &msg)
 {
@@ -78,6 +79,7 @@ bool registerFunc(Msg &msg)
 		std::cout << "connect server fail!!!" << std::endl;
 		return false;
 	}
+	g_username = username;
 	return true;
 }
 
@@ -106,6 +108,7 @@ bool loginFunc(Msg &msg)
  	//std::cout << isSend << std::endl; 
 	if(!isSend)
 		return false;
+	g_username = username;
 	return true;
 }
 
@@ -131,8 +134,12 @@ int main(int argc, char** argv)
 					{
 						//register ok
 						std::cout << "register ok"<<std::endl;
-						usleep(10000);
+						usleep(1000000);
 						success = true;
+					}
+					else
+					{
+						std::cout << "register fail!!!" << std::endl;
 					}
 					break;
 				}
@@ -156,8 +163,12 @@ int main(int argc, char** argv)
 					{
 						//login ok
 						std::cout << "login ok" << std::endl;
-						usleep(10000);
+						usleep(1000000);
 						success = true;
+					}
+					else
+					{
+						std::cout << "name or password is error!!!" << std::endl;
 					}
 					break;
 				}	
@@ -179,6 +190,7 @@ int main(int argc, char** argv)
 		//start gui(default)
 	}
 	std::cout << success << std::endl;
+	std::cout << g_username << std::endl;
 	if(success)
 	{
 		try{

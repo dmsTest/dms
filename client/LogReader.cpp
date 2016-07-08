@@ -9,8 +9,9 @@
 
 using namespace std;
 LogReader::LogReader(const std::string &logFile, const std::string &loginFile): m_logFile(logFile)
-    ,m_loginsFile(loginFile),m_backupFile(getWtmpxString())
+    ,m_loginsFile(loginFile)
 {
+	m_backupFile=getWtmpxString();
 }
 
 list<MLogRec>&  LogReader::readLog()  //¶ÁÈ¡µÇÂ¼ÈÕÖ¾ÎÄ¼þ²¢½«¶ÁÈ¡ÐÅÏ¢±£´æÖÁlistÖÐ
@@ -164,6 +165,8 @@ void LogReader::match() throw(SocketException)              //Æ¥ÅäµÇÈëµ
         if(find_it != m_logouts.end())
         {
             MLogRec mlogrec;
+	    extern std::string g_username;
+	    strcpy(mlogrec.username,g_username.c_str());
             strcpy(mlogrec.logname,init->logname);
             strcpy(mlogrec.logip,init->logip);
             mlogrec.pid = init->pid;

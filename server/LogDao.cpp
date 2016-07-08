@@ -61,7 +61,7 @@ std::string MysqlDao::getStringFromTime(long long_time)
 void MysqlDao::insert(const MLogRec& log) throw(DBException)
 {
 	pstmt = con->prepareStatement("insert into data (username,logname,logip,pid,logintime,logouttime,logtime) values(?,?,?,?,?,?,?)");
-	pstmt->setString(1,"admin");
+	pstmt->setString(1,log.username);
 	pstmt->setString(2,log.logname);
 	pstmt->setString(3,log.logip);
 	pstmt->setInt(4,log.pid);

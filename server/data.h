@@ -45,6 +45,7 @@ struct MLogin
 //匹配日志记录
 struct MLogRec
 {
+    char username[32];	
     char logname[32];
     char logip[32];
     pid_t pid;
@@ -52,6 +53,7 @@ struct MLogRec
     long logouttime;
     long logtime;
 
+    /*
     MLogRec& operator=(const MLogRec &right)
     {
         strcpy(logname,right.logname);
@@ -80,14 +82,14 @@ struct MLogRec
             return 0;
         }
     }
-
+    */
 
 };
 
 struct Msg
 {
        enum MsgType type;
-       struct
+       union
        {
          struct MRegister reg;
 	 struct MLogin login;
