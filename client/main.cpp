@@ -13,9 +13,9 @@
 
 using namespace std;
 
-std::string _ip = "127.0.0.1";
-short _port = 8888;
-SocketSender socketSender("./fail.dat",_port,_ip);
+extern std::string _ip;
+extern short _port;
+extern SocketSender socketSender;
 extern std::string g_username;
 
 bool registerFunc(Msg &msg)
