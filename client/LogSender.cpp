@@ -66,8 +66,6 @@ void SocketSender::connectServer()
 void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
 {
 	//m_logFile,if sock connect success,read fail file
-    if(!m_sockfd)
-	{
 		std::ifstream ifs(m_failFile.c_str());
 		std::string line;
 		while(std::getline(ifs,line))
@@ -82,7 +80,6 @@ void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
             iss >> item.logtime;
          	logs.push_back(item);
 		}
-	}
 }
 
 bool SocketSender::recvData() throw(SendException)
