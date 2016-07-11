@@ -1,0 +1,5 @@
+#!/bin/bash
+#rm -r wtmpx.*
+cp wtmpx $1
+cat /dev/null > wtmpx
+exit 0
