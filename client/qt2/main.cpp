@@ -24,6 +24,7 @@ extern short _port;
 extern SocketSender socketSender;
 extern std::string g_username;
 extern Msg msg;
+bool success = false;
 
 bool registerFunc(Msg &msg)
 {
@@ -119,13 +120,9 @@ bool loginFunc(Msg &msg)
     return true;
 }
 
-int main(int argc, char *argv[])
-{
 
-    socketSender.connectServer();
-    bool success = false;
-    if(argc > 1)
-    {
+void initMain(int argc, char *argv[])
+{
         while(true)
         {
             if(strcmp(argv[1],"-r")==0)
@@ -191,16 +188,10 @@ int main(int argc, char *argv[])
             }
 
         }
-    }
-    else
-    {
-        //start gui(default)
-        QApplication a(argc, argv);
-        MainWindow w;
-        w.show();
+}
 
-        return a.exec();
-    }
+int startDMS()
+{
     std::cout << success << std::endl;
     std::cout << g_username << std::endl;
     if(success)
@@ -221,11 +212,26 @@ int main(int argc, char *argv[])
         }
     }
     return 0;
-    /*
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+}
 
-    return a.exec();
-    */
+
+int main(int argc, char *argv[])
+{
+    socketSender.connectServer();
+    bool success = false;
+    if(argc > 1)
+    {
+        initMain(argc,argv);
+    }
+    else
+    {
+        //start gui(default)
+        QApplication a(argc, argv);
+        MainWindow w;
+        w.show();
+
+        return a.exec();
+    }
+    startDMS();
+    return 0;
 }
