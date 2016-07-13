@@ -48,7 +48,7 @@ struct MRegister
 {
 	char username[32];
 	char password[32];
-	char gender[4];
+	char gender[7];
 	char phone[12];
 };
 

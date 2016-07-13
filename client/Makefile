@@ -5,7 +5,7 @@ RM=rm -rf
 CFLAGS=-c -Wall -std=c++0x -I.
 $(PROJ):$(OBJS)
 	$(CC) $^ -o $@
-%.o:%.cpp
+%.o:%.cpp %.h
 	$(CC) $(CFLAGS) $^
 clean:
 	$(RM) $(PROJ) $(OBJS)
