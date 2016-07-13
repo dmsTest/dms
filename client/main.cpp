@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "data.h"
 #include <unistd.h>
+#include <curses.h>
 
 using namespace std;
 
@@ -20,7 +21,8 @@ extern std::string g_username;
 
 bool registerFunc(Msg &msg)
 {
-	std::string username,password,repassword,gender,phone;
+	std::string username,gender,phone;
+	char *password,*repassword;
 	std::cout << "please input the name(length<32): ";
 	std::cin >> username;
 	if(username.size() >= 32)
@@ -29,18 +31,18 @@ bool registerFunc(Msg &msg)
 		std::cout << "register fail!!!" << std::endl;
 		return false;	
 	}
-	std::cout << "please input the password(6<length<32):";
-	std::cin >> password;
-	std::cout << password.size();
-	if(password.size() >= 32 || password.size() <= 6)
+        password=getpass("please input the password(6<length<32):");    /*输入密码*/
+ 	std::string p_str(password);	
+	if(p_str.size() >= 32 || p_str.size() <= 6)
 	{
 		std::cout << "length is too longer or too shorter!!!" << std::endl;
 		std::cout << "register fail!!!" << std::endl;
 		return false;
 	}
-	std::cout << "please repeat input the password: ";
-	std::cin >> repassword;
-	if(password != repassword)
+	
+	repassword=getpass("please repeat input the password: ");
+	std::string rp_str(repassword);
+	if(p_str != rp_str)
 	{
 		std::cout << "password is not match!!!" << std::endl;
 		std::cout << "register fail!!!" << std::endl;
@@ -63,7 +65,7 @@ bool registerFunc(Msg &msg)
 		return false;
 	}
 	strcpy(msg.data.reg.username,username.c_str());
-	strcpy(msg.data.reg.password,password.c_str());
+	strcpy(msg.data.reg.password,p_str.c_str());
 	if(gender == "man")
 	{
 		strcpy(msg.data.reg.gender,"男");
@@ -85,7 +87,7 @@ bool registerFunc(Msg &msg)
 
 bool loginFunc(Msg &msg)
 {
-	std::string username,password;
+	std::string username;
 	std::cout << "please input the name(length<32): ";
 	std::cin >> username;
 	if(username.size() >= 32)
@@ -94,8 +96,9 @@ bool loginFunc(Msg &msg)
 		std::cout << "login fail!!!" << std::endl;
 		return false;
 	}
-	std::cout << "please input the password(6<length<32): " ;
-	std::cin >> password;
+	char *p;
+	p=getpass("please input the password(6<length<32): ");
+	std::string password(p);
 	if(password.size()<=6 || password.size()>=32)
 	{
 		std::cout << "length is too longer or too shorter!!!" <<std::endl;
