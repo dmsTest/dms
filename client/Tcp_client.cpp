@@ -10,11 +10,14 @@
 #include <errno.h>
 #include "Log.h"
 #include "LogReader.h"
+#include "Net_handle.h"
 
 Tcp_client::Tcp_client(string _ip,short _port) :
 	m_ip(_ip),
 	m_port(_port),
-	m_state(E_TS_NOT_CONNECT)
+	m_state(E_TS_NOT_CONNECT),
+	m_register(false),
+	m_login(false)
 {
 
 }
@@ -27,7 +30,7 @@ Tcp_client::~Tcp_client()
 	}
 }
 
-void Tcp_client::connect_server(int nsec)
+int Tcp_client::connect_server(int nsec)
 {
 	m_sockfd = socket(AF_INET,SOCK_STREAM,0);
 	int opt = 1;
@@ -133,7 +136,10 @@ void* Tcp_client::send_thread_func(void *arg)
 	message_base *p_item = NULL;
 	Tcp_client *p_tcp_client = static_cast<Tcp_client*>(arg);
 	if( !p_tcp_client )
-		oops("arg to tcp_client error",1);
+	{
+		Singleton<Log>::getInstance()->write_log(E_LS_NORMAL,"%s\n","arg convert to tcp_client error");
+		return;
+	}
 	int server_fd = p_tcp_client->m_sockfd;
 	while( p_tcp_client->m_state != E_TS_SHUTDOWN )
 	{
@@ -159,7 +165,10 @@ void* Tcp_client::recv_thread_func(void *arg)
 {
 	Tcp_client *p_tcp_client = static_cast<Tcp_client*>(arg);
 	if( !p_tcp_client )
-		oops("arg to tcp client error",1);
+	{
+		Singleton<Log>::getInstance()->write_log(E_LS_NORMAL,"%s\n","arg convert to tcp_client error");
+		return;
+	}
 	E_READ_STATE read_state = E_RS_SIZE;
 	int server_fd = p_tcp_client->m_sockfd;
 	int msg_size = 0;
@@ -217,7 +226,13 @@ void* Tcp_client::recv_thread_func(void *arg)
 void* Tcp_client::work_thread_func(void *arg)
 {
 	Tcp_client *p_tcp_client = static_cast<Tcp_client*>(arg);
+	if( !p_tcp_client )
+	{
+		Singleton<Log>::getInstance()->write_log(E_LS_NORMAL,"%s\n","arg convert to tcp_client error");
+		return;
+	}
 	message_base *p_item;
+	Net_handle handle_item(p_tcp_client);
 	while( p_tcp_client->m_state != E_TS_SHUTDOWN )
 	{
 		// would block this thread
@@ -225,8 +240,7 @@ void* Tcp_client::work_thread_func(void *arg)
 		if( !p_item )
 			continue;
 		// handle the msg:p_item
-		
-
+		handle_item.handle_message(p_item);
 		// delete p_item
 		delete p_item;
 		p_item = NULL;

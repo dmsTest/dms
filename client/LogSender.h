@@ -15,6 +15,8 @@
 #include "ClientException.h"
 #include "Log.h"
 
+#define WAIT_SEC 5
+
 class LogSender
 {
     public:
@@ -41,7 +43,8 @@ class SocketSender : public LogSender
         void readFailFile(std::list<MLogRec>& logs) throw(ReadException);
         bool sendData(Msg &msg) throw(SendException);
         void saveFailFile(std::list<MLogRec>& logs) throw(SaveException);
-	bool recvData() throw(SendException);
+        bool is_register();
+        bool is_login();
     private:
         std::string m_failFile;
         short m_port;

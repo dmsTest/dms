@@ -12,16 +12,16 @@
 #include "LogSender.h"
 #include "Log.h"
 #include "data.h"
+#include "Net_base.h"
 
 using namespace std;
 
-extern std::string _ip;
-extern short _port;
 extern SocketSender socketSender;
 extern std::string g_username;
 
-bool registerFunc(Msg &msg)
+bool registerFunc()
 {
+	NET_C2S_register send;
 	std::string username,gender,phone;
 	char *password,*repassword;
 	std::cout << "please input the name(length<32): ";
@@ -65,29 +65,25 @@ bool registerFunc(Msg &msg)
 		std::cout << "register fail!!!" << std::endl;
 		return false;
 	}
-	strcpy(msg.data.reg.username,username.c_str());
-	strcpy(msg.data.reg.password,p_str.c_str());
+	strcpy(send.user_name,username.c_str());
+	strcpy(send.user_password,p_str.c_str());
 	if(gender == "man")
 	{
-		strcpy(msg.data.reg.gender,"男");
+		strcpy(send.gender,"男");
 	}
 	else
 	{
-		strcpy(msg.data.reg.gender,"女");
+		strcpy(send.gender,"女");
 	}
-	strcpy(msg.data.reg.phone,phone.c_str());
-	bool isSend = socketSender.sendData(msg);
-	if(!isSend)
-	{
-		std::cout << "connect server fail!!!" << std::endl;
-		return false;
-	}
+	strcpy(send.phone,phone.c_str());
+	TCP_CLIENT->send_message(&send,send.msg_size);
 	g_username = username;
 	return true;
 }
 
 bool loginFunc(Msg &msg)
 {
+	NET_C2S_login send;
 	std::string username;
 	std::cout << "please input the name(length<32): ";
 	std::cin >> username;
@@ -106,20 +102,16 @@ bool loginFunc(Msg &msg)
 		std::cout << "login fail!!!" << std::endl;
 		return false;
 	}
-	strcpy(msg.data.login.username,username.c_str());
-	strcpy(msg.data.login.password,password.c_str());
-	bool isSend = socketSender.sendData(msg);
- 	//std::cout << isSend << std::endl; 
-	if(!isSend)
-		return false;
-	g_username = username;
+	strcpy(send.user_name,username.c_str());
+	strcpy(send.user_password,password.c_str());
+	
+	TCP_CLIENT->send_message(&send,send.msg_size);
+ 	g_username = username;
 	return true;
 }
 
-int main(int argc, char** argv)
+bool start(int argc,char *L*argv)
 {
-	socketSender.connectServer();
-	Msg msg;
 	bool success = false;
 	if(argc > 1)
 	{
@@ -128,17 +120,16 @@ int main(int argc, char** argv)
 			if(strcmp(argv[1],"-r")==0)
 			{
 				//register
-				msg.type = REG;
-				bool isSuccess = registerFunc(msg);
+				bool isSuccess = registerFunc();
 				if(isSuccess)
 				{
 					//recv from server("yes" or "no")
-					bool isOk = socketSender.recvData();
+					bool isOk = socketSender.is_register();
 					if(isOk)
 					{
 						//register ok
 						std::cout << "register ok"<<std::endl;
-						usleep(1000000);
+						sleep(1);
 						success = true;
 					}
 					else
@@ -150,24 +141,23 @@ int main(int argc, char** argv)
 				else
 				{
 					//end this client
-					return -1;
+					return false;
 				}
 			}	
 			else if(strcmp(argv[1],"-l")==0)
 			{
 				//login
 				//read username and then read passwd
-				msg.type = LOGIN;
-				bool isSuccess = loginFunc(msg);
+				bool isSuccess = loginFunc();
 				if(isSuccess)
 				{
 					//recv from server("yes" or "no")
-					bool isOk = socketSender.recvData();
+					bool isOk = socketSender.is_login();
 					if(isOk)
 					{
 						//login ok
 						std::cout << "login ok" << std::endl;
-						usleep(1000000);
+						sleep(1);
 						success = true;
 					}
 					else
@@ -178,23 +168,27 @@ int main(int argc, char** argv)
 				}	
 				else
 				{
-					return -1;
+					return false;
 				}		
 			}
 			else
 			{
 				std::cout << "format is error!!!(eg: ./client -r/-l/-g)" << std::endl;
-				return -1;
+				return false;
 			}
 			
 		}
 	}
-	else
-	{
-		//start gui(default)
-	}
-	std::cout << success << std::endl;
-	std::cout << g_username << std::endl;
+	return success;
+}
+
+int main(int argc, char** argv)
+{
+	bool is_connect = socketSender.connectServer();
+	if( !is_connect )
+		exit(EXIT_FAILURE);
+
+	bool success = start(argc,argv);
 	if(success)
 	{
 		try{
