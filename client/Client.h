@@ -1,9 +1,11 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <iostream>
 #include "LogReader.h"
 #include "LogSender.h"
-#include <iostream>
+#include "Log.h"
+#include "Singleton.h"
 
 class Client
 {

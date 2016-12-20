@@ -1,16 +1,17 @@
 #include <iostream>
-#include "Client.h"
-#include "ClientException.h"
-#include "LogReader.h"
-#include "LogSender.h"
 #include <string>
 #include <cstring>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "data.h"
 #include <unistd.h>
 #include <curses.h>
+#include "Client.h"
+#include "ClientException.h"
+#include "LogReader.h"
+#include "LogSender.h"
+#include "Log.h"
+#include "data.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ bool registerFunc(Msg &msg)
 		std::cout << "register fail!!!" << std::endl;
 		return false;	
 	}
-        password=getpass("please input the password(6<length<32):");    /*输入密码*/
+       	password=getpass("please input the password(6<length<32):");    /*输入密码*/
  	std::string p_str(password);	
 	if(p_str.size() >= 32 || p_str.size() <= 6)
 	{
@@ -201,7 +202,7 @@ int main(int argc, char** argv)
 			std::string loginsFile = "logins.dat";
 			LogReader reader(logFile,loginsFile);
 			//ConsoleSender consoleSender;
-			std::cout << "---------socket sender-----" << std::endl;
+			Singleton<Log>::getInstance()->write_log(E_LOG_NORMAL,"%s\n","---------socket sender-----");
 			Client client(reader,socketSender);
 			//Client client(reader,consoleSender);
 			client.dataMine();

@@ -8,11 +8,11 @@ Client::Client(LogReader& reader,LogSender& sender)
 
 void Client::dataMine() throw(ClientException)
 {
-	std::cout << "dms is start..." << std::endl;
+	Singleton<Log>::getInstance()->write_log(E_LOG_NORMAL,"%s\n","---------dms is start-----");
 	std::list<MLogRec> logList = m_reader.readLog();
 	std::cout << logList.size() << std::endl;
 	m_sender.sendLog(logList);
-	std::cout << "dms is end..." << std::endl;
+	Singleton<Log>::getInstance()->write_log(E_LOG_NORMAL,"%s\n","---------dms is end-----");
 }
 
 Client::~Client()

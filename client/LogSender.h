@@ -13,6 +13,7 @@
 #include <string.h>
 #include "data.h"
 #include "ClientException.h"
+#include "Log.h"
 
 class LogSender
 {
