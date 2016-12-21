@@ -5,7 +5,7 @@
 #include <time.h>
 #include "Singleton.h"
 
-class Mutex : public noncopyable
+class Mutex : public Noncopyable
 {
 public:
 	explicit Mutex(bool isprocess_shared = false);
@@ -22,7 +22,7 @@ private:
 };
 
 // use the constructor and destructor to lock and unlock
-class MutexGuard : public noncopyable
+class MutexGuard : public Noncopyable
 {
 public:
 	explicit MutexGuard(Mutex &_mutex):
@@ -38,7 +38,7 @@ private:
 	Mutex &m_mutex;
 };
 
-class Condition : public noncopyable
+class Condition : public Noncopyable
 {
 public:
 	Condition(Mutex &_mutex):

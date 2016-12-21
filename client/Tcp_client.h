@@ -13,7 +13,7 @@ using namespace std;
 #define SERVER_PORT  8888
 #define WAIT_READ_SEC 2
 
-#define TCP_CLIENT->send_message(msg,msg_size)  do {  \
+#define TCP_CLIENT_SEND(msg,msg_size)  do {  \
 		Singleton<Tcp_client>::getInstance()->send_message(msg,msg_size);  \
 	} while(0)
 
@@ -43,7 +43,7 @@ public:
 	inline bool is_register() { return m_register; }
 	inline void set_register(bool _register) { m_register = _register;}
 	inline bool is_login() { return m_login;}
-	inline bool set_login(bool _login) { m_login = _login; }
+	inline void set_login(bool _login) { m_login = _login; }
 private:
 	static void* send_thread_func(void *arg);
 	static void* recv_thread_func(void *arg);
@@ -54,8 +54,8 @@ private:
 	E_TCP_STATE m_state;
 	volatile bool m_register;
 	volatile bool m_login;
-	SafeList<message_base *> m_send_queue;
-	SafeList<message_base *> m_recv_queue;
+	SafeList<message_base*> m_send_queue;
+	SafeList<message_base*> m_recv_queue;
 	pthread_t m_send_tid;
 	pthread_t m_recv_tid;
 	pthread_t m_work_tid;

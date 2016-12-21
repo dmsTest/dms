@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include "data.h"
 #include "Log.h"
-
+                                    
 using namespace std;
 
 LogReader::LogReader(const std::string &logFile, const std::string &loginFile): m_logFile(logFile)

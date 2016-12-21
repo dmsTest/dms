@@ -5,9 +5,12 @@
 #include <sys/types.h>
 #include <sys/select.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
 #include <time.h>
 #include <fcntl.h>
 #include <errno.h>
+#include "data.h"
 #include "Log.h"
 #include "LogReader.h"
 #include "Net_handle.h"
@@ -52,7 +55,7 @@ int Tcp_client::connect_server(int nsec)
 	fcntl(m_sockfd,F_SETFL,flags | O_NONBLOCK);
 	
 	error = 0;
-	if( (n = connect(m_sockfd,sa_in,sa_len)) < 0 )
+	if( (n = connect(m_sockfd,(struct sockaddr*)&sa_in,sa_len)) < 0 )
 	{
 		if( errno != EINPROGRESS )
 			return -1;
@@ -67,11 +70,11 @@ int Tcp_client::connect_server(int nsec)
 	tval.tv_usec = 0;
 	if( (n = select(m_sockfd + 1,&rset,&wset,NULL,nsec?&tval:NULL)) == 0 )
 	{
-		close(sockfd);
+		close(m_sockfd);
 		errno = ETIMEDOUT;
 		return -1;
 	}
-	if( FD_ISSET(sockfd,&rset) || FD_ISSET(sockfd,&wset) )
+	if( FD_ISSET(m_sockfd,&rset) || FD_ISSET(m_sockfd,&wset) )
 	{
 		len = sizeof(error);
 		if( getsockopt(m_sockfd,SOL_SOCKET,SO_ERROR,&error,&len) < 0 )
@@ -82,10 +85,10 @@ int Tcp_client::connect_server(int nsec)
 		oops("select error",1);
 	}
 done:
-	fcntl(sockfd,F_SETFL,flags);
+	fcntl(m_sockfd,F_SETFL,flags);
 	if( error )
 	{
-		close(sockfd);
+		close(m_sockfd);
 		errno = error;
 		return -1;
 	}
@@ -123,7 +126,7 @@ void Tcp_client::send_message(message_base *msg,int message_size)
 {
 	char *msg_copy = new char[message_size];
 	memmove(msg_copy,msg,message_size);
-	message_base *p_item = static_cast<message_base*>(msg_copy);
+	message_base *p_item = reinterpret_cast<message_base*>(msg_copy);
 	if( p_item == nullptr)
 	{
 		delete[] msg_copy;
@@ -137,8 +140,8 @@ void* Tcp_client::send_thread_func(void *arg)
 	Tcp_client *p_tcp_client = static_cast<Tcp_client*>(arg);
 	if( !p_tcp_client )
 	{
-		Singleton<Log>::getInstance()->write_log(E_LS_NORMAL,"%s\n","arg convert to tcp_client error");
-		return;
+		Singleton<Log>::getInstance()->write_log(E_LOG_NORMAL,"%s\n","arg convert to tcp_client error");
+		return NULL;
 	}
 	int server_fd = p_tcp_client->m_sockfd;
 	while( p_tcp_client->m_state != E_TS_SHUTDOWN )
@@ -150,15 +153,16 @@ void* Tcp_client::send_thread_func(void *arg)
 		// send to server,the msg size
 		int msg_size = p_item->msg_size;
 		// encrypt
-		encrypt((char*)&msg_size,sizeof(int));
+		encrypt_msg((char*)&msg_size,sizeof(int));
 		write(server_fd,(char*)&msg_size,sizeof(int));
 		// encrypt
-		encrypt((char*)p_item,p_item->msg_size);
+		encrypt_msg((char*)p_item,p_item->msg_size);
 		// send to server the msg
 		writen(server_fd,(char*)p_item,p_item->msg_size);
 
 		delete p_item;
 	}
+	return NULL;
 }
 
 void* Tcp_client::recv_thread_func(void *arg)
@@ -166,8 +170,8 @@ void* Tcp_client::recv_thread_func(void *arg)
 	Tcp_client *p_tcp_client = static_cast<Tcp_client*>(arg);
 	if( !p_tcp_client )
 	{
-		Singleton<Log>::getInstance()->write_log(E_LS_NORMAL,"%s\n","arg convert to tcp_client error");
-		return;
+		Singleton<Log>::getInstance()->write_log(E_LOG_NORMAL,"%s\n","arg convert to tcp_client error");
+		return NULL;
 	}
 	E_READ_STATE read_state = E_RS_SIZE;
 	int server_fd = p_tcp_client->m_sockfd;
@@ -186,7 +190,7 @@ void* Tcp_client::recv_thread_func(void *arg)
 		int ready = select(max_fd + 1,&read_set,NULL,NULL,&tv);
 		if( ready < 0)
 		{
-			Singleton<Log>::write_log(E_LOG_ERROR,"%s\n","select ready error");	
+			Singleton<Log>::getInstance()->write_log(E_LOG_ERROR,"%s\n","select ready error");	
 			break;
 		}
 		else if( ready == 0 )
@@ -201,11 +205,11 @@ void* Tcp_client::recv_thread_func(void *arg)
 				read_n = read(server_fd,&msg_size,sizeof(int));
 				if( read_n != sizeof(int) )
 				{
-					Singleton<Log>::write_log(E_LOG_ERROR,"read server socket size error,size: %d/n",read_n);
+					Singleton<Log>::getInstance()->write_log(E_LOG_ERROR,"read server socket size error,size: %d/n",read_n);
 					break;
 				}
 				// decrypt
-				decrypt((char*)&msg_size,sizeof(int));
+				decrypt_msg((char*)&msg_size,sizeof(int));
 				read_state = E_RS_DATA;
 			}
 			else
@@ -214,13 +218,14 @@ void* Tcp_client::recv_thread_func(void *arg)
 				memset(buf_data,'\0',msg_size);
 				readn(server_fd,buf_data,msg_size);
 				// decrypt
-				decrypt(buf_data,msg_size);
+				decrypt_msg(buf_data,msg_size);
 				message_base *p_item = reinterpret_cast<message_base*>(buf_data);
-				m_recv_queue.push_back(p_item);
+				p_tcp_client->m_recv_queue.push_back(p_item);
 				read_state = E_RS_SIZE;
 			}
 		}
 	}
+	return NULL;
 }
 
 void* Tcp_client::work_thread_func(void *arg)
@@ -228,8 +233,8 @@ void* Tcp_client::work_thread_func(void *arg)
 	Tcp_client *p_tcp_client = static_cast<Tcp_client*>(arg);
 	if( !p_tcp_client )
 	{
-		Singleton<Log>::getInstance()->write_log(E_LS_NORMAL,"%s\n","arg convert to tcp_client error");
-		return;
+		Singleton<Log>::getInstance()->write_log(E_LOG_NORMAL,"%s\n","arg convert to tcp_client error");
+		return NULL;
 	}
 	message_base *p_item;
 	Net_handle handle_item(p_tcp_client);
@@ -245,4 +250,5 @@ void* Tcp_client::work_thread_func(void *arg)
 		delete p_item;
 		p_item = NULL;
 	}
+	return NULL;
 }

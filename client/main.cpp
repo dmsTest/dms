@@ -13,6 +13,7 @@
 #include "Log.h"
 #include "data.h"
 #include "Net_base.h"
+#include "Tcp_client.h"
 
 using namespace std;
 
@@ -76,12 +77,12 @@ bool registerFunc()
 		strcpy(send.gender,"女");
 	}
 	strcpy(send.phone,phone.c_str());
-	TCP_CLIENT->send_message(&send,send.msg_size);
+	TCP_CLIENT_SEND(&send,send.msg_size);
 	g_username = username;
 	return true;
 }
 
-bool loginFunc(Msg &msg)
+bool loginFunc()
 {
 	NET_C2S_login send;
 	std::string username;
@@ -105,12 +106,12 @@ bool loginFunc(Msg &msg)
 	strcpy(send.user_name,username.c_str());
 	strcpy(send.user_password,password.c_str());
 	
-	TCP_CLIENT->send_message(&send,send.msg_size);
+	TCP_CLIENT_SEND(&send,send.msg_size);
  	g_username = username;
 	return true;
 }
 
-bool start(int argc,char *L*argv)
+bool start(int argc,char **argv)
 {
 	bool success = false;
 	if(argc > 1)

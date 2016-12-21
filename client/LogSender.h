@@ -36,21 +36,17 @@ class ConsoleSender : public LogSender
 class SocketSender : public LogSender
 {
     public:
-        SocketSender(const std::string &failFile, short port,const std::string &ip);
+        SocketSender(const std::string &failFile);
         ~SocketSender();
         void sendLog(std::list<MLogRec> &logs) throw(SendException);
-        void connectServer();
+        bool connectServer();
         void readFailFile(std::list<MLogRec>& logs) throw(ReadException);
-        bool sendData(Msg &msg) throw(SendException);
+        bool sendData(MLogRec &send_data) throw(SendException);
         void saveFailFile(std::list<MLogRec>& logs) throw(SaveException);
         bool is_register();
         bool is_login();
     private:
         std::string m_failFile;
-        short m_port;
-        std::string m_ip;
-        int m_sockfd;
-        bool is_closed;
 };
 
 template<typename T>

@@ -1,6 +1,7 @@
 #include "LogSender.h"
 #include <unistd.h>
 #include "Tcp_client.h"
+#include "Log.h"
 #include <string.h>
 #include <time.h>
 
@@ -21,8 +22,8 @@ void ConsoleSender::sendLog(std::list<MLogRec> &logs)throw(SendException)
 	std::cout << "log size: " << logs.size() << std::endl;
 }
 
-SocketSender::SocketSender(const std::string &failFile, short port,const std::string &ip)
-	:LogSender(),m_failFile(failFile),m_port(port),m_ip(ip),is_closed(false)
+SocketSender::SocketSender(const std::string &failFile)
+	:m_failFile(failFile)
 {
 
 }
@@ -30,14 +31,11 @@ SocketSender::SocketSender(const std::string &failFile, short port,const std::st
 void SocketSender::sendLog(std::list<MLogRec> &logs) throw(SendException)
 {
 	readFailFile(logs);
-//	sendData(logs);
 	std::list<MLogRec>::iterator it = logs.begin();
 	while(it != logs.end())
 	{
-		Msg msg;
-		msg.type = DATA;
-		msg.data.logdata = *it;	
-		bool isSend = sendData(msg);
+		MLogRec send_data = *it;
+		bool isSend = sendData(send_data);
 		if(isSend)
 			it = logs.erase(it);
 		else
@@ -52,13 +50,13 @@ bool SocketSender::connectServer()
 	int state = Singleton<Tcp_client>::getInstance()->connect_server();
 	if( state == 0 )
 	{
-		Singleton<Log>::getInstance()->write_log(E_LS_NORMAL,"%s\n","----------connect server success-----------");
+		Singleton<Log>::getInstance()->write_log(E_LOG_NORMAL,"%s\n","----------connect server success-----------");
 		std::cout << "connect server success" << std::endl;
 		return true;
 	}
 	else
 	{
-		Singleton<Log>::getInstance()->write_log(E_LS_ERROR,"%s\n","----------connect server fail-----------");
+		Singleton<Log>::getInstance()->write_log(E_LOG_ERROR,"%s\n","----------connect server fail-----------");
 		std::cout << "connect server fail" << std::endl;
 		return false;
 	}
@@ -83,17 +81,17 @@ void SocketSender::readFailFile(std::list<MLogRec>& logs) throw(ReadException)
 	}
 }
 
-bool SocketSender::sendData(Msg &msg) throw(SendException)
+bool SocketSender::sendData(MLogRec &send_data) throw(SendException)
 {
 	NET_C2S_match_data send;
-	strncpy(send.log_data.username,msg.logdata.username,sizeof(send.log_data.username));
-	strncpy(send.log_data.logname,msg.logdata.logname,sizeof(send.log_data.logname));
-	strncpy(send.log_data.logip,msg.logdata.logip,sizeof(send.log_data.logip));
-	send.log_data.pid = msg.logdata.pid;
-	send.log_data.logintime = msg.logdate.logintime;
-	send.log_data.logouttime = msg.logdata.logouttime;
-	send.log_data.logtime = msg.logdata.logtime;
-	TCP_CLIENT->send_message(&send,sizeof(send));
+	strncpy(send.log_data.username,send_data.username,sizeof(send.log_data.username));
+	strncpy(send.log_data.logname,send_data.logname,sizeof(send.log_data.logname));
+	strncpy(send.log_data.logip,send_data.logip,sizeof(send.log_data.logip));
+	send.log_data.pid = send_data.pid;
+	send.log_data.logintime = send_data.logintime;
+	send.log_data.logouttime = send_data.logouttime;
+	send.log_data.logtime = send_data.logtime;
+	TCP_CLIENT_SEND(&send,send.msg_size);
 	return true;
 }
 
@@ -142,8 +140,5 @@ bool SocketSender::is_login()
 
 SocketSender::~SocketSender()
 {
-	if(!is_closed)
-	{
-		close(m_sockfd);	
-	}
+	
 }

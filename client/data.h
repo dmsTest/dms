@@ -159,4 +159,12 @@ struct Msg
 	} data;
 };
 
+#define BUF_SIZE 20
+
+#define oops(err_str,err_code) do { fprintf(stderr,"%s/n",err_str); \
+                                    exit(err_code); } while(0)
+
+#define LOGIN     7
+#define LOGOUT  8
+
 #endif

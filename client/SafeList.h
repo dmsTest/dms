@@ -5,6 +5,8 @@
 #include "Mutex.h"
 #include "Tcp_client.h"
 
+#define WAIT_POP_SEC 2
+
 using namespace std;
 
 // thread safe list
@@ -12,7 +14,7 @@ template<typename T>
 class SafeList
 {
 public:
-	SafeList() : m_mutex(),m_list(),m_cond(m_mutex)
+	SafeList() : m_mutex(),m_cond(m_mutex)
 	{
 
 	}
@@ -46,7 +48,7 @@ public:
 		m_mutex.lock();
 		while( m_list.empty() )
 		{
-			m_cond.wait_for_sec(WAIT_READ_SEC);
+			m_cond.wait_for_sec(WAIT_POP_SEC);
 		}
 		if( m_list.empty() )
 		{
@@ -61,7 +63,7 @@ public:
 private:
 	list<T> m_list;
 	Mutex m_mutex;
-	Conditon m_cond;
+	Condition m_cond;
 };
 
 #endif
