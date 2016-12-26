@@ -1,4 +1,4 @@
-#include "LogQueue.h"
+#include "log_queue.h"
 #include <algorithm>
 
 LogQueue::LogQueue()

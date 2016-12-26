@@ -2,8 +2,8 @@
 #define SERVERSOCKET_H
 
 #include <string>
-#include "ServerException.h"
-#include "LogThread.h"
+#include "server_exception.h"
+#include "log_thread.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>

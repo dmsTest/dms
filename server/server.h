@@ -2,8 +2,8 @@
 #define SERVER_H
 
 #include <string>
-#include "LogThread.h"
-#include "ServerSocket.h"
+#include "log_thread.h"
+#include "server_socket.h"
 
 class Server
 {

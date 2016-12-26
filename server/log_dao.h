@@ -7,7 +7,7 @@
 #include <string>
 #include <fstream>
 #include "data.h"
-#include "ServerException.h"
+#include "server_exception.h"
 #include "mysql_connection.h"
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
