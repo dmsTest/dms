@@ -1,4 +1,4 @@
-#include "Client.h"
+#include "client.h"
 
 Client::Client(LogReader& reader,LogSender& sender)
             : m_reader(reader), m_sender(sender)

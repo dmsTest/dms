@@ -1,4 +1,4 @@
-#include "LogReader.h"
+#include "log_reader.h"
 #include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
@@ -9,7 +9,7 @@
 #include <time.h>
 #include <arpa/inet.h>
 #include "data.h"
-#include "Log.h"
+#include "client_log.h"
                                     
 using namespace std;
 

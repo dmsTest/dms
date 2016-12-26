@@ -2,8 +2,8 @@
 #define __SAFELIST_H_
 
 #include <list>
-#include "Mutex.h"
-#include "Tcp_client.h"
+#include "mutex.h"
+#include "tcp_client.h"
 
 #define WAIT_POP_SEC 2
 

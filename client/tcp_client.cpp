@@ -1,4 +1,4 @@
-#include "Tcp_client.h"
+#include "tcp_client.h"
 
 #include <unistd.h>
 #include <sys/socket.h>
@@ -11,9 +11,9 @@
 #include <fcntl.h>
 #include <errno.h>
 #include "data.h"
-#include "Log.h"
-#include "LogReader.h"
-#include "Net_handle.h"
+#include "client_log.h"
+#include "log_reader.h"
+#include "net_handle.h"
 
 Tcp_client::Tcp_client(string _ip,short _port) :
 	m_ip(_ip),
@@ -206,6 +206,11 @@ void* Tcp_client::recv_thread_func(void *arg)
 				if( read_n != sizeof(int) )
 				{
 					Singleton<Log>::getInstance()->write_log(E_LOG_ERROR,"read server socket size error,size: %d/n",read_n);
+					break;
+				}
+				if( msg_size == 0 )
+				{
+					Singleton<Log>::getInstance()->write_log(E_LOG_ERROR,"%s\n","read size = 0,shutdown the socket");
 					break;
 				}
 				// decrypt

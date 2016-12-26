@@ -12,8 +12,8 @@
 
 #include <string.h>
 #include "data.h"
-#include "ClientException.h"
-#include "Log.h"
+#include "client_exception.h"
+#include "client_log.h"
 
 #define WAIT_SEC 5
 

@@ -2,10 +2,10 @@
 #define CLIENT_H
 
 #include <iostream>
-#include "LogReader.h"
-#include "LogSender.h"
-#include "Log.h"
-#include "Singleton.h"
+#include "log_reader.h"
+#include "log_sender.h"
+#include "client_log.h"
+#include "singleton.h"
 
 class Client
 {

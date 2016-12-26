@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 #include <time.h>
-#include "Singleton.h"
+#include "singleton.h"
 
 class Mutex : public Noncopyable
 {

@@ -3,9 +3,9 @@
 
 #include <string>
 #include <pthread.h>
-#include "Singleton.h"
-#include "Net_base.h"
-#include "SafeList.h"
+#include "singleton.h"
+#include "net_base.h"
+#include "safe_list.h"
 
 using namespace std;
 

@@ -1,7 +1,7 @@
-#include "LogSender.h"
+#include "log_sender.h"
 #include <unistd.h>
-#include "Tcp_client.h"
-#include "Log.h"
+#include "tcp_client.h"
+#include "client_log.h"
 #include <string.h>
 #include <time.h>
 

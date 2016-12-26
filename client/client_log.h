@@ -2,7 +2,7 @@
 #define __LOG_H_
 
 #include <iostream>
-#include "Singleton.h"
+#include "singleton.h"
 
 #define MAX_LINE   4096
 
