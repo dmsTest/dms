@@ -4,8 +4,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "data.h"
-#include "LogDao.h"
-#include "Server.h"
+#include "log_dao.h"
+#include "server.h"
 using namespace std;
 
 short _port = 8888;

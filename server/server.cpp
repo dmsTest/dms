@@ -1,4 +1,4 @@
-#include "Server.h"
+#include "server.h"
 
 Server::Server(LogDao &dao, short port, const std::string ip) : m_store(dao),m_socket(port,ip)
 {
